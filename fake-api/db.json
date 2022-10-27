@@ -1,0 +1,47 @@
+{
+  "contacts": [
+    {
+      "first": "Manu",
+      "last": "Electron",
+      "twitter": "@neolectron",
+      "avatar": "https://avatars.githubusercontent.com/u/5268400?v=4",
+      "notes": "Passionate developer, Typescript enthousiast. ..also ex C++ . I'm your comic teacher. Always looking for an improvement to make.",
+      "id": 3,
+      "favorite": false
+    },
+    {
+      "first": "Facebook",
+      "last": "Meta",
+      "twitter": "@facebook",
+      "avatar": "https://avatars.githubusercontent.com/u/69631?s=200&v=4",
+      "notes": "Meta by facebook",
+      "id": 4
+    },
+    {
+      "first": "ADRIEN",
+      "last": "KISSIE",
+      "twitter": "@fredkisss",
+      "avatar": "https://avatars.githubusercontent.com/u/38298743?v=4",
+      "notes": "Hello ",
+      "id": 5
+    },
+    {
+      "first": "Ryan",
+      "last": "Carniato",
+      "twitter": "@ryansolid",
+      "avatar": "https://avatars.githubusercontent.com/u/2768267?v=4",
+      "notes": "The creator of SolidJS and a great teacher",
+      "id": 6,
+      "favorite": true
+    },
+    {
+      "first": "Christopher",
+      "last": "N. KATOYI",
+      "twitter": "@Christopher2K",
+      "avatar": "https://avatars.githubusercontent.com/u/16650656?v=4",
+      "notes": "Educational streamer. Web frontend, backend and mobile stuffs. Senior frontend developer @getmaple Worked @ Fabernovel, RATP, Metafora Biosystems...",
+      "id": 7,
+      "favorite": true
+    }
+  ]
+}
