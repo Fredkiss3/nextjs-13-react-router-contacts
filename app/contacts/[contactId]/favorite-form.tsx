@@ -15,10 +15,7 @@ async function favoriteContact(contact: Contact) {
 }
 
 export function Favorite({ contact }: { contact: Contact }) {
-  // yes, this is a `let` for later
-  let favorite = contact.favorite;
   const router = useRouter();
-  const path = usePathname();
 
   function handleFavorite(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -32,10 +29,12 @@ export function Favorite({ contact }: { contact: Contact }) {
     <form method="post" onSubmit={handleFavorite}>
       <button
         name="favorite"
-        value={favorite ? "false" : "true"}
-        aria-label={favorite ? "Remove from favorites" : "Add to favorites"}
+        value={contact.favorite ? "false" : "true"}
+        aria-label={
+          contact.favorite ? "Remove from favorites" : "Add to favorites"
+        }
       >
-        {favorite ? "★" : "☆"}
+        {contact.favorite ? "★" : "☆"}
       </button>
     </form>
   );
