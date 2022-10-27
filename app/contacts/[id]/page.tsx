@@ -6,20 +6,23 @@ import { notFound } from "next/dist/client/components/not-found";
 import { DeleteForm } from "./delete-form";
 import { Favorite } from "./favorite-form";
 
-export default async function ContactPage({
-  params,
-}: {
-  params: { contactId: string };
-}) {
+type PageParams = Record<string, string>;
+interface PageProps {
+  params?: PageParams;
+  searchParams?: Record<string, string | string[]>;
+}
+
+export default async function ContactPage({ params }: PageProps) {
   const contact = await fetch(
-    `http://localhost:8098/contacts/${params.contactId}`
+    `http://localhost:8098/contacts/${params?.id}`
   ).then((r) => {
     if (r.status === 404) return null;
     return r.json() as Promise<Contact>;
   });
 
   if (!contact) {
-    return notFound();
+    notFound();
+    return null;
   }
 
   return (
@@ -64,10 +67,7 @@ export default async function ContactPage({
         {contact.notes && <p>{contact.notes}</p>}
 
         <div>
-          <Link
-            href={`/contacts/${params.contactId}/edit`}
-            className={`edit-button`}
-          >
+          <Link href={`/contacts/${params?.id}/edit`} className={`edit-button`}>
             Edit
           </Link>
           <DeleteForm contactId={contact.id} />

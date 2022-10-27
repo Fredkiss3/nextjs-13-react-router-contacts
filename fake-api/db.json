@@ -7,7 +7,7 @@
       "avatar": "https://avatars.githubusercontent.com/u/5268400?v=4",
       "notes": "Passionate developer, Typescript enthousiast. ..also ex C++ . I'm your comic teacher. Always looking for an improvement to make.",
       "id": 3,
-      "favorite": false
+      "favorite": true
     },
     {
       "first": "Facebook",
@@ -18,8 +18,8 @@
       "id": 4
     },
     {
-      "first": "ADRIEN",
-      "last": "KISSIE",
+      "first": "Fred",
+      "last": "KISS",
       "twitter": "@fredkisss",
       "avatar": "https://avatars.githubusercontent.com/u/38298743?v=4",
       "notes": "Hello ",
@@ -41,6 +41,15 @@
       "avatar": "https://avatars.githubusercontent.com/u/16650656?v=4",
       "notes": "Educational streamer. Web frontend, backend and mobile stuffs. Senior frontend developer @getmaple Worked @ Fabernovel, RATP, Metafora Biosystems...",
       "id": 7,
+      "favorite": false
+    },
+    {
+      "first": "Theo",
+      "last": "Browne",
+      "twitter": "@theobr",
+      "avatar": "https://avatars.githubusercontent.com/u/6751787?v=4",
+      "notes": "I'm just here for the vibes, man\n",
+      "id": 8,
       "favorite": true
     }
   ]
