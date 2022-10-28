@@ -3,7 +3,7 @@
 import { useRouter } from "next/navigation";
 
 async function deleteContact(id: number, redirect: (to: string) => void) {
-  await fetch(`http://localhost:8098/contacts/${id}`, {
+  await fetch(`${process.env.NEXT_PUBLIC_API_SERVER}/contacts/${id}`, {
     method: "DELETE",
   });
 

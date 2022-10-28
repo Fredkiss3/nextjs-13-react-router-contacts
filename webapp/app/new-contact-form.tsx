@@ -3,7 +3,7 @@
 import { useRouter } from "next/navigation";
 
 async function createContact(redirect: (to: string) => void) {
-  const res = await fetch(`http://localhost:8098/contacts`, {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_SERVER}/contacts`, {
     method: "POST",
     headers: {
       "content-type": "application/json",

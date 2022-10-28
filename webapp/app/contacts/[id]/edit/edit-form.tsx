@@ -11,7 +11,7 @@ async function updateContact(
 ) {
   const updates = Object.fromEntries(formData);
 
-  await fetch(`http://localhost:8098/contacts/${id}`, {
+  await fetch(`${process.env.NEXT_PUBLIC_API_SERVER}/contacts/${id}`, {
     method: "PUT",
     headers: {
       "Content-Type": "application/json",

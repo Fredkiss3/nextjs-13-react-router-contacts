@@ -9,7 +9,7 @@ interface PageProps {
 
 const EditFormPage = async function ({ params }: PageProps) {
   const contact = await fetch(
-    `http://localhost:8098/contacts/${params?.id}`
+    `${process.env.NEXT_PUBLIC_API_SERVER}/contacts/${params?.id}`
   ).then((r) => r.json() as Promise<Contact>);
 
   return <EditForm contact={contact} />;
