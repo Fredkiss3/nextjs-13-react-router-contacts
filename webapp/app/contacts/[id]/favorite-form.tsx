@@ -2,7 +2,7 @@
 
 import type { Contact } from "../../layout";
 
-import { usePathname, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 
 async function favoriteContact(contact: Contact) {
   return fetch(`${process.env.NEXT_PUBLIC_API_SERVER}/contacts/${contact.id}`, {

@@ -5,14 +5,21 @@ import { notFound } from "next/dist/client/components/not-found";
 
 import { DeleteForm } from "./delete-form";
 import { Favorite } from "./favorite-form";
+import { wait } from "../../functions";
+import { PageProps } from "../../types";
 
-type PageParams = Record<string, string>;
-interface PageProps {
-  params?: PageParams;
-  searchParams?: Record<string, string | string[]>;
+export async function generateStaticParams() {
+  const contacts = await fetch(
+    `${process.env.NEXT_PUBLIC_API_SERVER}/contacts`
+  ).then((r) => r.json() as Promise<Contact[]>);
+
+  return contacts.map((c) => ({
+    id: c.id.toString(),
+  }));
 }
 
 export default async function ContactPage({ params }: PageProps) {
+  await wait(1500);
   const contact = await fetch(
     `${process.env.NEXT_PUBLIC_API_SERVER}/contacts/${params?.id}`
   ).then((r) => {

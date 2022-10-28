@@ -1,10 +1,15 @@
 import { Contact } from "../../../layout";
+import { PageProps } from "../../../types";
 import { EditForm } from "./edit-form";
 
-type PageParams = Record<string, string>;
-interface PageProps {
-  params?: PageParams;
-  searchParams?: Record<string, string | string[]>;
+export async function generateStaticParams() {
+  const contacts = await fetch(
+    `${process.env.NEXT_PUBLIC_API_SERVER}/contacts`
+  ).then((r) => r.json() as Promise<Contact[]>);
+
+  return contacts.map((c) => ({
+    id: c.id.toString(),
+  }));
 }
 
 const EditFormPage = async function ({ params }: PageProps) {

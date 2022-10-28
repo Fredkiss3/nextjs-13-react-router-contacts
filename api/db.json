@@ -7,23 +7,25 @@
       "avatar": "https://avatars.githubusercontent.com/u/5268400?v=4",
       "notes": "Passionate developer, Typescript enthousiast. ..also ex C++ . I'm your comic teacher. Always looking for an improvement to make.",
       "id": 3,
-      "favorite": true
+      "favorite": false
     },
     {
       "first": "Facebook",
       "last": "Meta",
-      "twitter": "@facebook",
+      "twitter": "facebook",
       "avatar": "https://avatars.githubusercontent.com/u/69631?s=200&v=4",
       "notes": "Meta by facebook",
-      "id": 4
+      "id": 4,
+      "favorite": false
     },
     {
       "first": "Fred",
       "last": "KISS",
-      "twitter": "@fredkisss",
+      "twitter": "fredkisss",
       "avatar": "https://avatars.githubusercontent.com/u/38298743?v=4",
       "notes": "Hello ",
-      "id": 5
+      "id": 5,
+      "favorite": true
     },
     {
       "first": "Ryan",
@@ -51,6 +53,14 @@
       "notes": "I'm just here for the vibes, man\n",
       "id": 8,
       "favorite": true
+    },
+    {
+      "first": "Lee",
+      "last": "Robinson",
+      "twitter": "leerob",
+      "avatar": "https://avatars.githubusercontent.com/u/9113740?v=4",
+      "notes": "VP of Developer Experience ▲ @vercel",
+      "id": 9
     }
   ]
 }

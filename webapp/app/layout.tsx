@@ -20,9 +20,9 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const contacts = await fetch(`${process.env.NEXT_PUBLIC_API_SERVER}/contacts`).then(
-    (r) => r.json() as Promise<Contact[]>
-  );
+  const contacts = await fetch(
+    `${process.env.NEXT_PUBLIC_API_SERVER}/contacts`
+  ).then((r) => r.json() as Promise<Contact[]>);
 
   return (
     <html lang="en">

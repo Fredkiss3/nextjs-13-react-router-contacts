@@ -8,14 +8,19 @@ export function ContactList({ contacts }: { contacts: Contact[] }) {
   const searchParams = useSearchParams();
   const searchQuery = searchParams.get("q") ?? "";
 
-  const filtered = contacts.filter((c) => {
-    return (
-      c.first
-        ?.toLocaleLowerCase()
-        .startsWith(searchQuery.toLocaleLowerCase()) ||
-      c.last?.toLocaleLowerCase().startsWith(searchQuery.toLocaleLowerCase())
-    );
-  });
+  const filtered =
+    searchQuery.length === 0
+      ? contacts
+      : contacts.filter((c) => {
+          return (
+            c.first
+              ?.toLocaleLowerCase()
+              .startsWith(searchQuery.toLocaleLowerCase()) ||
+            c.last
+              ?.toLocaleLowerCase()
+              .startsWith(searchQuery.toLocaleLowerCase())
+          );
+        });
 
   return (
     <>
