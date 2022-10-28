@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
+    "api": "json-server --watch ./fake-api/db.json --port 8098",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
@@ -21,6 +22,7 @@
     "@types/react-dom": "18.0.7",
     "eslint": "8.26.0",
     "eslint-config-next": "13.0.0",
+    "json-server": "^0.17.0",
     "typescript": "4.8.4"
   }
 }
