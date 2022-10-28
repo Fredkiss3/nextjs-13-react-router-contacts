@@ -1,28 +1,15 @@
 {
-  "name": "next13-test",
-  "version": "0.1.0",
-  "private": true,
+  "name": "@next13-test/root",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
   "scripts": {
-    "dev": "next dev",
-    "api": "json-server --watch ./fake-api/db.json --port 8098",
-    "build": "next build",
-    "start": "next start",
-    "lint": "next lint",
-    "info": "next info"
+    "api": "pnpm run --filter api start",
+    "dev:webapp": "pnpm run --filter webapp dev",
+    "prod:webapp": "pnpm run --filter webapp start",
+    "build:webapp": "pnpm run --filter webapp build"
   },
-  "dependencies": {
-    "next": "13.0.1-canary.0",
-    "react": "18.2.0",
-    "react-dom": "18.2.0"
-  },
-  "devDependencies": {
-    "@next/bundle-analyzer": "^13.0.0",
-    "@types/node": "18.11.5",
-    "@types/react": "18.0.23",
-    "@types/react-dom": "18.0.7",
-    "eslint": "8.26.0",
-    "eslint-config-next": "13.0.0",
-    "json-server": "^0.17.0",
-    "typescript": "4.8.4"
-  }
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
 }

@@ -4,10 +4,6 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next
 
 1. Install the packages :
 ```bash
-npm install
-# or
-yarn
-# or 
 pnpm install
 ```
 
@@ -15,21 +11,13 @@ pnpm install
 
 
 ```bash
-npm run api
-# or
-yarn api
-# or 
 pnpm api
 ```
 
-3. Run the development server:
+3. Run the nextjs development server:
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or 
-pnpm dev
+pnpm dev:webapp
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.

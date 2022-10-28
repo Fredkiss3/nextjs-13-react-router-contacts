@@ -1,32 +1,40 @@
 lockfileVersion: 5.4
 
-specifiers:
-  '@next/bundle-analyzer': ^13.0.0
-  '@types/node': 18.11.5
-  '@types/react': 18.0.23
-  '@types/react-dom': 18.0.7
-  eslint: 8.26.0
-  eslint-config-next: 13.0.0
-  json-server: ^0.17.0
-  next: 13.0.1-canary.0
-  react: 18.2.0
-  react-dom: 18.2.0
-  typescript: 4.8.4
+importers:
 
-dependencies:
-  next: 13.0.1-canary.0_biqbaboplfbrettd7655fr4n2y
-  react: 18.2.0
-  react-dom: 18.2.0_react@18.2.0
+  .:
+    specifiers: {}
 
-devDependencies:
-  '@next/bundle-analyzer': 13.0.0
-  '@types/node': 18.11.5
-  '@types/react': 18.0.23
-  '@types/react-dom': 18.0.7
-  eslint: 8.26.0
-  eslint-config-next: 13.0.0_wyqvi574yv7oiwfeinomdzmc3m
-  json-server: 0.17.0
-  typescript: 4.8.4
+  api:
+    specifiers:
+      json-server: ^0.17.0
+    devDependencies:
+      json-server: 0.17.0
+
+  webapp:
+    specifiers:
+      '@next/bundle-analyzer': ^13.0.0
+      '@types/node': 18.11.5
+      '@types/react': 18.0.23
+      '@types/react-dom': 18.0.7
+      eslint: 8.26.0
+      eslint-config-next: 13.0.0
+      next: 13.0.1-canary.0
+      react: 18.2.0
+      react-dom: 18.2.0
+      typescript: 4.8.4
+    dependencies:
+      next: 13.0.1-canary.0_biqbaboplfbrettd7655fr4n2y
+      react: 18.2.0
+      react-dom: 18.2.0_react@18.2.0
+    devDependencies:
+      '@next/bundle-analyzer': 13.0.0
+      '@types/node': 18.11.5
+      '@types/react': 18.0.23
+      '@types/react-dom': 18.0.7
+      eslint: 8.26.0
+      eslint-config-next: 13.0.0_wyqvi574yv7oiwfeinomdzmc3m
+      typescript: 4.8.4
 
 packages:
 
@@ -272,11 +280,15 @@ packages:
   /@types/keyv/3.1.4:
     resolution: {integrity: sha512-BQ5aZNSCpj7D6K2ksrRCTmKRLEpnPvWDiLPfoGyhZ++8YtiK9d/3DBKPJgry359X/P1PfruyYwvnvwFjuEiEIg==}
     dependencies:
-      '@types/node': 18.11.5
+      '@types/node': 18.11.7
     dev: true
 
   /@types/node/18.11.5:
     resolution: {integrity: sha512-3JRwhbjI+cHLAkUorhf8RnqUbFXajvzX4q6fMn5JwkgtuwfYtRQYI3u4V92vI6NJuTsbBQWWh3RZjFsuevyMGQ==}
+    dev: true
+
+  /@types/node/18.11.7:
+    resolution: {integrity: sha512-LhFTglglr63mNXUSRYD8A+ZAIu5sFqNJ4Y2fPuY7UlrySJH87rRRlhtVmMHplmfk5WkoJGmDjE9oiTfyX94CpQ==}
     dev: true
 
   /@types/prop-types/15.7.5:
@@ -300,7 +312,7 @@ packages:
   /@types/responselike/1.0.0:
     resolution: {integrity: sha512-85Y2BjiufFzaMIlvJDvTTB8Fxl2xfLo4HgmHzVBz08w4wDePCTjYw66PdrolO0kzli3yam/YCgRufyo1DdQVTA==}
     dependencies:
-      '@types/node': 18.11.5
+      '@types/node': 18.11.7
     dev: true
 
   /@types/scheduler/0.16.2:
