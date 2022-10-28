@@ -1,32 +1,15 @@
 "use client";
+import * as React from "react";
 
-import { useSearchParams } from "next/navigation";
 import { Contact } from "./layout";
 import { NavLink } from "./nav-link";
 
 export function ContactList({ contacts }: { contacts: Contact[] }) {
-  const searchParams = useSearchParams();
-  const searchQuery = searchParams.get("q") ?? "";
-
-  const filtered =
-    searchQuery.length === 0
-      ? contacts
-      : contacts.filter((c) => {
-          return (
-            c.first
-              ?.toLocaleLowerCase()
-              .startsWith(searchQuery.toLocaleLowerCase()) ||
-            c.last
-              ?.toLocaleLowerCase()
-              .startsWith(searchQuery.toLocaleLowerCase())
-          );
-        });
-
   return (
     <>
       <ul>
-        {filtered.length > 0 ? (
-          filtered.map((contact) => (
+        {contacts.length > 0 ? (
+          contacts.map((contact) => (
             <li key={contact.id}>
               <NavLink href={`/contacts/${contact.id}/`}>
                 <>

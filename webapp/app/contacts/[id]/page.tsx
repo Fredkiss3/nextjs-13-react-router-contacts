@@ -8,16 +8,6 @@ import { Favorite } from "./favorite-form";
 import { wait } from "../../functions";
 import { PageProps } from "../../types";
 
-export async function generateStaticParams() {
-  const contacts = await fetch(
-    `${process.env.NEXT_PUBLIC_API_SERVER}/contacts`
-  ).then((r) => r.json() as Promise<Contact[]>);
-
-  return contacts.map((c) => ({
-    id: c.id.toString(),
-  }));
-}
-
 export default async function ContactPage({ params }: PageProps) {
   await wait(1500);
   const contact = await fetch(

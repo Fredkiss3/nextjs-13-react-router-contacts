@@ -1,17 +1,14 @@
 "use client";
 
-import { useRouter, useSearchParams, usePathname } from "next/navigation";
+export type SearchFormProps = {
+  onChangeQuery: (newQuery: string) => void;
+  query: string;
+};
 
-export function SearchForm() {
-  const searchParams = useSearchParams();
-
-  const router = useRouter();
-  const path = usePathname();
-
+export function SearchForm(props: SearchFormProps) {
   function handleSearch(form: HTMLFormElement) {
     const data = new FormData(form);
-
-    router.push(`${path}?q=${data.get("q")}`);
+    props.onChangeQuery(data.get("q")?.toString() ?? "");
   }
 
   return (
@@ -31,7 +28,7 @@ export function SearchForm() {
           placeholder="Search"
           type="search"
           name="q"
-          defaultValue={searchParams.get("p") ?? ""}
+          defaultValue={props.query}
           onChange={(event) => {
             handleSearch(event.currentTarget.form!);
           }}

@@ -7,7 +7,7 @@ export default function ContactLayout({
 }) {
   return (
     <>
-      <style jsx>{`
+      <style>{`
         .header {
           background-color: #f7f7f7;
           padding: 1rem 2rem;

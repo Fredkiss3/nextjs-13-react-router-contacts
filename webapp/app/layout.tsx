@@ -1,8 +1,6 @@
 import Image from "next/image";
-import { ContactList } from "./contact-list";
 import "./globals.css";
-import { NewContactForm } from "./new-contact-form";
-import { SearchForm } from "./search-form";
+import { Sidebar } from "./sidebar";
 
 export type Contact = {
   id: number;
@@ -21,7 +19,10 @@ export default async function RootLayout({
   children: React.ReactNode;
 }) {
   const contacts = await fetch(
-    `${process.env.NEXT_PUBLIC_API_SERVER}/contacts`
+    `${process.env.NEXT_PUBLIC_API_SERVER}/contacts`,
+    {
+      cache: "no-store",
+    }
   ).then((r) => r.json() as Promise<Contact[]>);
 
   return (
@@ -42,14 +43,7 @@ export default async function RootLayout({
             <Image src="/nextjs.svg" alt="NextJS Logo" width={72} height={16} />{" "}
             13 Contacts
           </h1>
-          <div>
-            <SearchForm />
-            <NewContactForm />
-          </div>
-
-          <nav>
-            <ContactList contacts={contacts} />
-          </nav>
+          <Sidebar contacts={contacts} />
         </div>
 
         <div id="detail">{children}</div>
