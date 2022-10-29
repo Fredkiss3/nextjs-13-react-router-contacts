@@ -9,7 +9,6 @@ import { wait } from "../../functions";
 import { PageProps } from "../../types";
 
 export default async function ContactPage({ params }: PageProps) {
-  await wait(1500);
   const contact = await fetch(
     `${process.env.NEXT_PUBLIC_API_SERVER}/contacts/${params?.id}`
   ).then((r) => {
