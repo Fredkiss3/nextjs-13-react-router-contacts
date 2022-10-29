@@ -5,6 +5,7 @@ const nextConfig = {
   experimental: {
     appDir: true,
     enableUndici: true,
+    runtime: "experimental-edge",
   },
   images: {
     remotePatterns: [
