@@ -4,7 +4,7 @@ import analyze from "@next/bundle-analyzer";
 const nextConfig = {
   experimental: {
     appDir: true,
-    enableUndici: true,
+    // enableUndici: true,
     runtime: "experimental-edge",
   },
   images: {
