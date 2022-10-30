@@ -19,7 +19,8 @@ export default async function RootLayout({
   children: React.ReactNode;
 }) {
   const contacts = await fetch(
-    `${process.env.NEXT_PUBLIC_API_SERVER}/contacts`
+    `${process.env.NEXT_PUBLIC_API_SERVER}/contacts`,
+    { cache: "no-store" }
   ).then((r) => r.json() as Promise<Contact[]>);
 
   return (
