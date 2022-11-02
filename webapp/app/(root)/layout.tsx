@@ -19,7 +19,7 @@ export default async function RootLayout({
 }) {
   const contacts = await fetch(
     `${process.env.NEXT_PUBLIC_API_SERVER}/contacts`,
-    {cache: 'no-cache'}
+    { cache: "no-store" }
   ).then((r) => r.json() as Promise<Contact[]>);
 
   return (

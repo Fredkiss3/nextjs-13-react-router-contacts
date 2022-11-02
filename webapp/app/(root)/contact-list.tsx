@@ -1,6 +1,4 @@
 "use client";
-import * as React from "react";
-
 import { Contact } from "./layout";
 import { NavLink } from "./nav-link";
 
