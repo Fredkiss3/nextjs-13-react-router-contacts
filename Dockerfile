@@ -5,7 +5,7 @@ RUN apk add --no-cache libc6-compat openssl
 WORKDIR /app
 
 # Install dependencies based on the preferred package manager
-RUN cd ./webapp/
+COPY pnpm-lock.yaml .
 
 RUN \
  if [ -f yarn.lock ]; then yarn --frozen-lockfile; \
@@ -19,7 +19,7 @@ RUN \
 FROM --platform=linux/amd64 node:16-alpine AS builder
 WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
-COPY . .
+COPY ./webapp .
 
 ENV NEXT_PUBLIC_API_SERVER https://fredkiss.dev/contacts-api
 ENV NEXT_TELEMETRY_DISABLED 1
