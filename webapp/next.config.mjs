@@ -7,6 +7,9 @@ const nextConfig = {
     // enableUndici: true,
     // runtime: "experimental-edge",
   },
+  output: "standalone",
+  reactStrictMode: true,
+  swcMinify: true,
   images: {
     remotePatterns: [
       {
