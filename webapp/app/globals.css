@@ -396,3 +396,29 @@ i {
   justify-content: center;
   width: 100%;
 }
+
+.animate-spin {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to{
+    transform: rotate(360deg);
+  } 
+}
+.header {
+  background-color: #f7f7f7;
+  padding: 1rem 2rem;
+  width: 100%;
+  position: absolute;
+  inset-inline: 0;
+  top: 0;
+}
+.page {
+  margin-top: 4rem;
+}
+.nav-link {
+  text-decoration: none;
+  color: #3992ff;
+  font-weight: 500;
+}
