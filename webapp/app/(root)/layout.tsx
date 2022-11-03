@@ -18,11 +18,10 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  await wait(1500);
   console.time('fetch /contacts');
   const contacts = await fetch(
     `${process.env.NEXT_PUBLIC_API_SERVER}/contacts`,
-    // { cache: "no-store" }
+    { cache: "no-store" }
     ).then((r) => r.json() as Promise<Contact[]>);
   console.timeEnd('fetch /contacts');
 
