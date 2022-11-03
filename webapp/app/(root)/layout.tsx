@@ -1,5 +1,6 @@
 import Image from "next/image";
 import { Sidebar } from "./sidebar";
+import {wait} from './functions';
 
 export type Contact = {
   id: number;
@@ -17,6 +18,7 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
+  await wait(1500);
   console.time('fetch /contacts');
   const contacts = await fetch(
     `${process.env.NEXT_PUBLIC_API_SERVER}/contacts`,
