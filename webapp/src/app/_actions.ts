@@ -1,9 +1,29 @@
 "use server";
 
-import { revalidatePath, revalidateTag } from "next/cache";
+import { revalidateTag } from "next/cache";
 import { redirect } from "next/navigation";
-import { isSSR } from "./(app)/server-utils";
-import { Contact } from "./types";
+import { isSSR } from "~/server-utils";
+import { Contact } from "~/types";
+import { contactKeys } from "~/(app)/constants";
+
+export async function getAllContacts() {
+  return fetch(`${process.env.API_SERVER}/contacts`, {
+    next: {
+      tags: contactKeys.all(),
+    },
+  }).then((r) => r.json() as Promise<Contact[]>);
+}
+
+export async function getContactDetail(id: number) {
+  return await fetch(`${process.env.API_SERVER}/contacts/${id}`, {
+    next: {
+      tags: contactKeys.detail(id.toString()),
+    },
+  }).then((r) => {
+    if (r.status === 404) return null;
+    return r.json() as Promise<Contact>;
+  });
+}
 
 export async function deleteContact(fd: FormData) {
   await fetch(
@@ -13,8 +33,8 @@ export async function deleteContact(fd: FormData) {
     }
   );
 
-  // Refresh the current route and fetch new data from the server
-  revalidateTag("contacts");
+  revalidateTag(contactKeys.allKey());
+
   if (isSSR()) {
     redirect("/");
   }
@@ -29,7 +49,8 @@ export async function createContact(fd: FormData) {
     body: JSON.stringify({ createdAt: Date.now() }),
   }).then((res) => res.json() as Promise<{ id: string }>);
 
-  revalidateTag("contacts");
+  revalidateTag(contactKeys.allKey());
+
   if (isSSR()) {
     redirect(`/contacts/${res.id}/edit`);
   }
@@ -48,10 +69,8 @@ export async function updateContact(fd: FormData) {
     body: JSON.stringify(updates),
   });
 
-  // revalidatePath("/");
-  revalidateTag(`contact-${id}`);
-  // revalidateTag("contacts");
-  // Refresh the current route and fetch new data from the server
+  revalidateTag(contactKeys.singleKey(id));
+
   if (isSSR()) {
     redirect(`/contacts/${id}`);
   }
@@ -74,10 +93,8 @@ export async function favoriteContact(formData: FormData) {
     body: JSON.stringify({ ...contact, favorite: !contact!.favorite }),
   });
 
-  // revalidatePath("/");
+  revalidateTag(contactKeys.singleKey(id));
 
-  revalidateTag(`contact-${id}`);
-  // revalidateTag("contacts");
   if (isSSR()) {
     redirect(`/contacts/${id}`);
   }

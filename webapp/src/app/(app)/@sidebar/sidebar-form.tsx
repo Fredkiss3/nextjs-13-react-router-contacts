@@ -1,8 +1,8 @@
 "use client";
 
 import * as React from "react";
-import { usePathname, useRouter } from "next/navigation";
 import { NewContactForm } from "~/(app)/new-contact-form";
+import { usePathname, useRouter } from "next/navigation";
 
 export type SidebarFormProps = {
   searchQuery?: string;

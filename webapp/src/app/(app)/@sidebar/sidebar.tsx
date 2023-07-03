@@ -4,18 +4,17 @@ import * as React from "react";
 import { NavLink } from "~/(app)/nav-link";
 import { SidebarForm } from "./sidebar-form";
 
+// utils
+import { getAllContacts, getContactDetail } from "~/_actions";
+import { isSSR } from "~/server-utils";
+
 // types
-import type { Contact } from "~/types";
 export type SidebarProps = {
   query?: string;
 };
 
 export async function Sidebar({ query = "" }: SidebarProps) {
-  const contacts = await fetch(`${process.env.API_SERVER}/contacts`, {
-    next: {
-      tags: ["contacts"],
-    },
-  }).then((r) => r.json() as Promise<Contact[]>);
+  const contacts = await getAllContacts();
 
   const filteredContacts =
     query.length === 0
@@ -29,10 +28,6 @@ export async function Sidebar({ query = "" }: SidebarProps) {
           );
         });
 
-  console.log({
-    query,
-    len: filteredContacts.length,
-  });
   return (
     <>
       <SidebarForm searchQuery={query} />
@@ -42,12 +37,13 @@ export async function Sidebar({ query = "" }: SidebarProps) {
           {filteredContacts.length > 0 ? (
             filteredContacts.map((contact) => (
               <li key={contact.id}>
-                <React.Suspense
-                  key={contact.id}
-                  fallback={<>loading contact...</>}
-                >
+                {isSSR() ? (
+                  <React.Suspense fallback={<>loading contact...</>}>
+                    <SingleContact id={contact.id} />
+                  </React.Suspense>
+                ) : (
                   <SingleContact id={contact.id} />
-                </React.Suspense>
+                )}
               </li>
             ))
           ) : (
@@ -64,14 +60,9 @@ export async function Sidebar({ query = "" }: SidebarProps) {
 }
 
 async function SingleContact(props: { id: number }) {
-  const contact = await fetch(
-    `${process.env.API_SERVER}/contacts/${props.id}`,
-    {
-      next: {
-        tags: ["contacts", `contact-${props.id}`],
-      },
-    }
-  ).then((r) => r.json() as Promise<Contact>);
+  const contact = await getContactDetail(props.id);
+
+  if (!contact) return null;
 
   return (
     <NavLink href={`/contacts/${contact.id}/`}>

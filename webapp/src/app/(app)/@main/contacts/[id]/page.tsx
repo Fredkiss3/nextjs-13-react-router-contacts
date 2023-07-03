@@ -9,9 +9,9 @@ import { FavoriteForm } from "./favorite-form";
 // utils
 import { renderMarkdown } from "~/(app)/functions";
 import { notFound } from "next/navigation";
+import { getContactDetail } from "~/_actions";
 
 // types
-import type { Contact } from "~/types";
 import type { Metadata } from "next";
 
 export async function generateMetadata({
@@ -21,17 +21,7 @@ export async function generateMetadata({
     id: string;
   };
 }): Promise<Metadata> {
-  const contact = await fetch(
-    `${process.env.API_SERVER}/contacts/${params?.id}`,
-    {
-      next: {
-        tags: ["contacts", `contact-${params.id}`],
-      },
-    }
-  ).then((r) => {
-    if (r.status === 404) return null;
-    return r.json() as Promise<Contact>;
-  });
+  const contact = await getContactDetail(Number(params.id));
 
   if (!contact) {
     notFound();
@@ -49,17 +39,7 @@ export default async function ContactPage({
     id: string;
   };
 }) {
-  const contact = await fetch(
-    `${process.env.API_SERVER}/contacts/${params.id}`,
-    {
-      next: {
-        tags: ["contacts", `contact-${params.id}`],
-      },
-    }
-  ).then((r) => {
-    if (r.status === 404) return null;
-    return r.json() as Promise<Contact>;
-  });
+  const contact = await getContactDetail(Number(params.id));
 
   if (!contact) {
     notFound();
@@ -95,7 +75,11 @@ export default async function ContactPage({
 
         {contact.twitter && (
           <p>
-            <a target="_blank" href={`https://github.com/${contact.twitter}`}>
+            <a
+              target="_blank"
+              rel="noreferrer"
+              href={`https://github.com/${contact.twitter}`}
+            >
               {contact.twitter}
             </a>
           </p>
@@ -110,7 +94,7 @@ export default async function ContactPage({
         )}
 
         <div>
-          <Link href={`/contacts/${params?.id}/edit`} className={`edit-button`}>
+          <Link href={`/contacts/${params.id}/edit`} className={`edit-button`}>
             Edit
           </Link>
           <DeleteForm contactId={contact.id} />

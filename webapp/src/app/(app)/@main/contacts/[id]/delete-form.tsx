@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import { useRouter } from "next/navigation";
-import { deleteContact } from "../../../_actions";
+import { deleteContact } from "~/_actions";
 
 export function DeleteForm({ contactId }: { contactId: number }) {
   const router = useRouter();
@@ -19,8 +19,8 @@ export function DeleteForm({ contactId }: { contactId: number }) {
         startTransition(
           () =>
             void deleteContact(new FormData(e.currentTarget)).then(() => {
-              router.refresh();
               router.replace("/");
+              router.refresh();
             })
         );
       }}

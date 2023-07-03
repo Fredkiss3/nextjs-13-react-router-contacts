@@ -1,36 +1,18 @@
 {
   "contacts": [
     {
-      "first": "Ryan",
-      "last": "Carniato",
-      "twitter": "@ryansolid",
-      "avatar": "https://avatars.githubusercontent.com/u/2768267?v=4",
-      "notes": "The creator of SolidJS and a great teacher",
-      "id": 6,
+      "id": 8,
+      "first": "Theo",
+      "last": "Browne",
+      "twitter": "t3dotgg",
+      "avatar": "https://avatars.githubusercontent.com/u/6751787?v=4",
+      "notes": "I'm just here for the vibes, man\r\n",
       "favorite": false
     },
     {
-      "first": "Christopher",
-      "last": "N. KATOYI",
-      "twitter": "@Christopher2K",
-      "avatar": "https://avatars.githubusercontent.com/u/16650656?v=4",
-      "notes": "Educational streamer. Web frontend, backend and mobile stuffs. Senior frontend developer @getmaple Worked @ Fabernovel, RATP, Metafora Biosystems...",
-      "id": 7,
-      "favorite": true
-    },
-    {
-      "first": "Theo",
-      "last": "Browne",
-      "twitter": "@theobr",
-      "avatar": "https://avatars.githubusercontent.com/u/6751787?v=4",
-      "notes": "I'm just here for the vibes, man\n",
-      "id": 8,
-      "favorite": true
-    },
-    {
+      "id": 9,
       "first": "Lee",
       "last": "Robinson",
-      "id": 9,
       "twitter": "leerob",
       "avatar": "https://avatars.githubusercontent.com/u/9113740?v=4",
       "notes": "VP of Developer Experience ▲ @vercel",
@@ -42,7 +24,7 @@
       "last": "Sherman",
       "twitter": "tom-sherman",
       "avatar": "https://avatars.githubusercontent.com/u/9257001?v=4",
-      "notes": "Hi there 👋\r\n\r\nI'm a software engineer based in Norwich, UK.\r\nLinks\r\n\r\n- Blog: [https://github.com/tom-sherman/blog](https://github.com/tom-sherman/blog)\r\n- Twitter: [https://twitter.com/tomus_sherman](https://twitter.com/tomus_sherman)\r\n- Polywork: https://www.polywork.com/tomsherman\r\n- LinkedIn: https://www.linkedin.com/in/tom-sherman-uk/\r\n- Website: https://tom-sherman.com/\r\n- Mastodon : https://fosstodon.org/@tomsherman\r\n",
+      "notes": "Hi there 👋\r\n\r\nI'm a software engineer based in Norwich, UK.\r\nLinks :\r\n\r\n- Blog: [https://github.com/tom-sherman/blog](https://github.com/tom-sherman/blog)\r\n- Twitter: [https://twitter.com/tomus_sherman](https://twitter.com/tomus_sherman)\r\n- Polywork: https://www.polywork.com/tomsherman\r\n- LinkedIn: https://www.linkedin.com/in/tom-sherman-uk/\r\n- Website: https://tom-sherman.com/\r\n- Mastodon : https://fosstodon.org/@tomsherman\r\n",
       "favorite": false
     },
     {
@@ -52,7 +34,25 @@
       "twitter": "Fredkiss3",
       "avatar": "https://avatars.githubusercontent.com/u/38298743?v=4",
       "notes": "Hello world, I'm Adrien KISSIE \r\n\r\nI'm a Fullstack Developer\r\n\r\n-    🌌 curious about everything\r\n-   🎧 Streaming on [Twitch](https://twitch.tv/fredkisss)\r\n-   🎴 curently working @ [monemprunt.com](https://monemprunt.com) as a Frontend Developer\r\n-   🌱 love to learn new things\r\n-   ⚡ love creating awesome stuff\r\n-   🤓 Tech nerd\r\n",
+      "favorite": false
+    },
+    {
+      "id": 12,
+      "first": "shadcn",
+      "last": "",
+      "twitter": "shadcn",
+      "avatar": "https://avatars.githubusercontent.com/u/124599?v=4",
+      "notes": "I own a computer.",
       "favorite": true
+    },
+    {
+      "id": 13,
+      "first": " Alvar ",
+      "last": "Lagerlöf ",
+      "twitter": "alvarlagerlof",
+      "avatar": "https://avatars.githubusercontent.com/u/14835120?v=4",
+      "notes": "Hopelessly curious.",
+      "favorite": false
     }
   ]
 }

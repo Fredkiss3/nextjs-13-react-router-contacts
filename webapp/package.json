@@ -11,13 +11,15 @@
     "info": "next info"
   },
   "dependencies": {
-    "next": "13.4.7",
+    "@t3-oss/env-nextjs": "^0.6.0",
+    "next": "13.4.8",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-markdown": "^8.0.7",
     "remark-gfm": "^3.0.1",
     "remarkable": "^2.0.1",
-    "server-only": "^0.0.1"
+    "server-only": "^0.0.1",
+    "zod": "^3.21.4"
   },
   "devDependencies": {
     "@types/node": "20.3.3",
@@ -26,6 +28,6 @@
     "@types/remarkable": "^2.0.3",
     "eslint": "8.26.0",
     "eslint-config-next": "13.0.0",
-    "typescript": "4.8.4"
+    "typescript": "5.1.6"
   }
 }

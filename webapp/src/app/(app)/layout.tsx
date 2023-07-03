@@ -1,20 +1,14 @@
 import Image from "next/image";
-import { Sidebar } from "./sidebar";
-import { Contact } from "../types";
 
 export default async function MainLayout({
   children,
   sidebar,
+  main,
 }: {
   children: React.ReactNode;
   sidebar: React.ReactNode;
+  main: React.ReactNode;
 }) {
-  // const contacts = await fetch(`${process.env.API_SERVER}/contacts`, {
-  //   next: {
-  //     tags: ["contacts"],
-  //   },
-  // }).then((r) => r.json() as Promise<Contact[]>);
-
   return (
     <main
       style={{
@@ -28,10 +22,9 @@ export default async function MainLayout({
           13 Contacts
         </h1>
 
-        {/* <Sidebar contacts={contacts} /> */}
         {sidebar}
       </aside>
-      <div id="detail">{children}</div>
+      <div id="detail">{main}</div>
     </main>
   );
 }

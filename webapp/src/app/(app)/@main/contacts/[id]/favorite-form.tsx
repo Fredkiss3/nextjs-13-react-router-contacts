@@ -1,5 +1,5 @@
-import type { Contact } from "../../../types";
-import { favoriteContact } from "../../../_actions";
+import type { Contact } from "../../../../types";
+import { favoriteContact } from "../../../../_actions";
 
 export function FavoriteForm({ contact }: { contact: Contact }) {
   return (
