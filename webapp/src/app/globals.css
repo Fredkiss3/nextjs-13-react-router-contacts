@@ -298,12 +298,6 @@ i {
   color: hsl(224, 98%, 58%);
 }
 
-#contact a[href*="twitter"] {
-  display: flex;
-  font-size: 1.5rem;
-  color: #3992ff;
-  text-decoration: none;
-}
 #contact a[href*="twitter"]:hover {
   text-decoration: underline;
 }
@@ -330,22 +324,22 @@ i {
   flex-direction: column;
   gap: 1rem;
 }
-#contact-form > p:first-child {
+#contact-form > p {
   margin: 0;
   padding: 0;
 }
-#contact-form > p:first-child > :nth-child(2) {
+#contact-form > p > :nth-child(2) {
   margin-right: 1rem;
 }
-#contact-form > p:first-child,
+#contact-form > p,
 #contact-form label {
   display: flex;
 }
-#contact-form p:first-child span,
+#contact-form p span,
 #contact-form label span {
   width: 8rem;
 }
-#contact-form p:first-child input,
+#contact-form p input,
 #contact-form label input,
 #contact-form label textarea {
   flex-grow: 2;

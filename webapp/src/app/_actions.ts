@@ -1,8 +1,9 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 import { redirect } from "next/navigation";
-import { isSSR } from "./server-utils";
+import { isSSR } from "./(app)/server-utils";
+import { Contact } from "./types";
 
 export async function deleteContact(fd: FormData) {
   await fetch(
@@ -13,7 +14,7 @@ export async function deleteContact(fd: FormData) {
   );
 
   // Refresh the current route and fetch new data from the server
-  revalidatePath("/");
+  revalidateTag("contacts");
   if (isSSR()) {
     redirect("/");
   }
@@ -28,7 +29,7 @@ export async function createContact(fd: FormData) {
     body: JSON.stringify({ createdAt: Date.now() }),
   }).then((res) => res.json() as Promise<{ id: string }>);
 
-  revalidatePath("/");
+  revalidateTag("contacts");
   if (isSSR()) {
     redirect(`/contacts/${res.id}/edit`);
   }
@@ -47,8 +48,36 @@ export async function updateContact(fd: FormData) {
     body: JSON.stringify(updates),
   });
 
-  revalidatePath("/");
+  // revalidatePath("/");
+  revalidateTag(`contact-${id}`);
+  // revalidateTag("contacts");
   // Refresh the current route and fetch new data from the server
+  if (isSSR()) {
+    redirect(`/contacts/${id}`);
+  }
+}
+
+export async function favoriteContact(formData: FormData) {
+  const id = formData.get("id")!.toString();
+  const contact = await fetch(`${process.env.API_SERVER}/contacts/${id}`).then(
+    (r) => {
+      if (r.status === 404) return null;
+      return r.json() as Promise<Contact>;
+    }
+  );
+
+  await fetch(`${process.env.API_SERVER}/contacts/${id}`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ ...contact, favorite: !contact!.favorite }),
+  });
+
+  // revalidatePath("/");
+
+  revalidateTag(`contact-${id}`);
+  // revalidateTag("contacts");
   if (isSSR()) {
     redirect(`/contacts/${id}`);
   }

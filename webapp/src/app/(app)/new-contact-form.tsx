@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import { useRouter } from "next/navigation";
-import { createContact } from "./_actions";
+import { createContact } from "../_actions";
 
 export function NewContactForm() {
   const router = useRouter();
@@ -10,7 +10,6 @@ export function NewContactForm() {
   return (
     <>
       <form
-        method="post"
         action={createContact}
         onSubmit={(e) => {
           e.preventDefault();

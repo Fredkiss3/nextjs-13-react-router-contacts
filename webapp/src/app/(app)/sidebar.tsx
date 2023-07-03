@@ -5,7 +5,7 @@ import { ContactList } from "./contact-list";
 import { NewContactForm } from "./new-contact-form";
 
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { Contact } from "./types";
+import { Contact } from "../types";
 
 export type SidebarProps = {
   contacts: Contact[];

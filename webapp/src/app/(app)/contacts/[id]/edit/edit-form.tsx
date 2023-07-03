@@ -1,10 +1,15 @@
 "use client";
 
 import * as React from "react";
+// components
 import Link from "next/link";
+
+// utils
 import { useRouter } from "next/navigation";
-import { updateContact } from "../../../_actions";
-import type { Contact } from "../../../types";
+import { updateContact } from "~/_actions";
+
+// types
+import type { Contact } from "~/types";
 
 export function EditForm({ contact }: { contact: Contact }) {
   const router = useRouter();
@@ -13,7 +18,6 @@ export function EditForm({ contact }: { contact: Contact }) {
   return (
     <>
       <form
-        method="post"
         id="contact-form"
         action={updateContact}
         onSubmit={(e) => {
@@ -27,6 +31,7 @@ export function EditForm({ contact }: { contact: Contact }) {
           );
         }}
       >
+        <input type="hidden" name="id" value={contact.id} />
         <p>
           <span>Name</span>
           <input
@@ -47,7 +52,7 @@ export function EditForm({ contact }: { contact: Contact }) {
           <input type="hidden" name="id" value={contact.id} />
         </p>
         <label>
-          <span>Twitter</span>
+          <span>Github handle</span>
           <input
             type="text"
             name="twitter"

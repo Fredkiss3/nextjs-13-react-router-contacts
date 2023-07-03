@@ -2,7 +2,7 @@ import Image from "next/image";
 
 export default async function Home() {
   return (
-    <main>
+    <section>
       <p id="zero-state">
         <Image src="/nextjs.svg" alt="NextJS Logo" width={72} height={16} />
         <br />
@@ -14,6 +14,6 @@ export default async function Home() {
         </a>
         .
       </p>
-    </main>
+    </section>
   );
 }

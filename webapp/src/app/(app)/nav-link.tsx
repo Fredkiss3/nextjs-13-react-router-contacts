@@ -1,21 +1,20 @@
 "use client";
 
 import Link, { type LinkProps } from "next/link";
-import { useSelectedLayoutSegments } from "next/navigation";
+import { usePathname } from "next/navigation";
 
-export function linkWithSlash(link: string): string {
-  link = link.startsWith("/") ? link : `/${link}`;
-  link = link.endsWith("/") ? link : `${link}/`;
+function linkWithSlash(href: string) {
+  if (href.endsWith("/")) {
+    return href;
+  }
 
-  return link;
+  return href + "/";
 }
 
 export function useActiveLink(href: string) {
-  const selectedSegments = useSelectedLayoutSegments();
+  const path = usePathname();
 
-  return linkWithSlash(selectedSegments.join(`/`)).includes(
-    linkWithSlash(href)
-  );
+  return linkWithSlash(path).includes(linkWithSlash(href));
 }
 
 export function NavLink({

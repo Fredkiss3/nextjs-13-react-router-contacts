@@ -1,5 +1,5 @@
 "use client";
-import { Contact } from "./layout";
+import type { Contact } from "~/types";
 import { NavLink } from "./nav-link";
 
 export function ContactList({ contacts }: { contacts: Contact[] }) {

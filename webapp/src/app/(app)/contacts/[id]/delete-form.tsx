@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import { useRouter } from "next/navigation";
-import { deleteContact } from "../../_actions";
+import { deleteContact } from "../../../_actions";
 
 export function DeleteForm({ contactId }: { contactId: number }) {
   const router = useRouter();
@@ -10,7 +10,6 @@ export function DeleteForm({ contactId }: { contactId: number }) {
 
   return (
     <form
-      method="post"
       action={deleteContact}
       onSubmit={(e) => {
         e.preventDefault();
