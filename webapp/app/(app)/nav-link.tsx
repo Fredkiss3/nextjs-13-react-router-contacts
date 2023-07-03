@@ -21,7 +21,7 @@ export function useActiveLink(href: string) {
 export function NavLink({
   href,
   children,
-  className,
+  className = "",
   ...props
 }: LinkProps & { children: React.ReactNode; className?: string }) {
   const isActive = useActiveLink(href.toString());

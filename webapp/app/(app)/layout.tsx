@@ -1,29 +1,15 @@
 import Image from "next/image";
 import { Sidebar } from "./sidebar";
-import {wait} from './functions';
+import { Contact } from "./types";
 
-export type Contact = {
-  id: number;
-  createdAt: number; // timestamp
-  first?: string;
-  last?: string;
-  favorite?: boolean;
-  avatar?: string;
-  twitter?: string;
-  notes?: string;
-};
-
-export default async function RootLayout({
+export default async function MainLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  console.time('fetch /contacts');
-  const contacts = await fetch(
-    `${process.env.NEXT_PUBLIC_API_SERVER}/contacts`,
-    { cache: "no-store" }
-    ).then((r) => r.json() as Promise<Contact[]>);
-  console.timeEnd('fetch /contacts');
+  const contacts = await fetch(`${process.env.API_SERVER}/contacts`, {
+    cache: "no-store",
+  }).then((r) => r.json() as Promise<Contact[]>);
 
   return (
     <main

@@ -1,46 +1,32 @@
 "use client";
 
+import * as React from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Contact } from "../../../layout";
-
-async function updateContact(
-  id: number,
-  formData: FormData,
-  redirect: (to: string) => void
-) {
-  const updates = Object.fromEntries(formData);
-
-  await fetch(`${process.env.NEXT_PUBLIC_API_SERVER}/contacts/${id}`, {
-    method: "PUT",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(updates),
-  });
-
-  // Refresh the current route and fetch new data from the server
-  redirect(`/contacts/${id}`);
-}
+import { updateContact } from "../../../_actions";
+import type { Contact } from "../../../types";
 
 export function EditForm({ contact }: { contact: Contact }) {
   const router = useRouter();
-
-  function handleUpdateForm(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault();
-    updateContact(
-      contact.id,
-      new FormData(e.target as HTMLFormElement),
-      (to: string) => {
-        router.refresh();
-        router.replace(to);
-      }
-    );
-  }
+  const [isPending, startTransition] = React.useTransition();
 
   return (
     <>
-      <form method="post" id="contact-form" onSubmit={handleUpdateForm}>
+      <form
+        method="post"
+        id="contact-form"
+        action={updateContact}
+        onSubmit={(e) => {
+          e.preventDefault();
+          startTransition(
+            () =>
+              void updateContact(new FormData(e.currentTarget)).then(() => {
+                router.refresh();
+                router.push(`/contacts/${contact.id}`);
+              })
+          );
+        }}
+      >
         <p>
           <span>Name</span>
           <input
@@ -57,6 +43,8 @@ export function EditForm({ contact }: { contact: Contact }) {
             name="last"
             defaultValue={contact.last}
           />
+
+          <input type="hidden" name="id" value={contact.id} />
         </p>
         <label>
           <span>Twitter</span>
@@ -82,7 +70,9 @@ export function EditForm({ contact }: { contact: Contact }) {
           <textarea name="notes" defaultValue={contact.notes} rows={6} />
         </label>
         <p>
-          <button type="submit">Save</button>
+          <button type="submit" disabled={isPending}>
+            {isPending ? "saving..." : "Save"}
+          </button>
           <Link href={`/contacts/${contact.id}`} className={`cancel-button`}>
             Cancel
           </Link>

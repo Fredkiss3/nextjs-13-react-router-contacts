@@ -1,26 +1,22 @@
 import Image from "next/image";
 import Link from "next/link";
-import type { Contact } from "../../layout";
 import { notFound } from "next/dist/client/components/not-found";
 
 import { DeleteForm } from "./delete-form";
-import { Favorite } from "./favorite-form";
-import { wait } from "../../functions";
-import { PageProps } from "../../types";
+import { FavoriteForm } from "./favorite-form";
+
+import type { Contact, PageProps } from "../../types";
 
 export default async function ContactPage({ params }: PageProps) {
-  console.time(`fetch /contacts/${params?.id}`);
   const contact = await fetch(
-    `${process.env.NEXT_PUBLIC_API_SERVER}/contacts/${params?.id}`
-    ).then((r) => {
-      if (r.status === 404) return null;
-      return r.json() as Promise<Contact>;
-    });
-  console.timeEnd(`fetch /contacts/${params?.id}`);
-    
+    `${process.env.API_SERVER}/contacts/${params?.id}`
+  ).then((r) => {
+    if (r.status === 404) return null;
+    return r.json() as Promise<Contact>;
+  });
+
   if (!contact) {
     notFound();
-    return null;
   }
 
   return (
@@ -48,7 +44,7 @@ export default async function ContactPage({ params }: PageProps) {
           ) : (
             <i>No Name</i>
           )}
-          <Favorite contact={contact} />
+          <FavoriteForm contact={contact} />
         </h1>
 
         {contact.twitter && (

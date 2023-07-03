@@ -31,6 +31,7 @@ textarea,
 input,
 button,
 .edit-button,
+.delete-button,
 .cancel-button {
   font-size: 1rem;
   font-family: inherit;
@@ -41,6 +42,13 @@ button,
   background-color: white;
   line-height: 1.5;
   margin: 0;
+}
+
+button {
+  cursor: pointer;
+}
+button:disabled {
+  cursor: not-allowed;
 }
 button,
 .edit-button,
@@ -92,7 +100,7 @@ button:active {
   color: #eeb004;
 }
 
-form[action$="destroy"] button {
+button.delete-button {
   color: #f44250;
 }
 
@@ -402,9 +410,9 @@ i {
 }
 
 @keyframes spin {
-  to{
+  to {
     transform: rotate(360deg);
-  } 
+  }
 }
 .header {
   background-color: #f7f7f7;
