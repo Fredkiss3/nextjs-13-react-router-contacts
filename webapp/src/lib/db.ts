@@ -1,3 +1,4 @@
+import { contacts } from "~/app/(models)/contact";
 import { drizzle } from "drizzle-orm/libsql";
 import { createClient } from "@libsql/client/http";
 import { env } from "~/env.mjs";
@@ -9,5 +10,8 @@ export const db = drizzle(
   }),
   {
     logger: true,
+    schema: {
+      contacts,
+    },
   }
 );

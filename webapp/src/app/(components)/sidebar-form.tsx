@@ -3,6 +3,7 @@
 import * as React from "react";
 import { NewContactForm } from "./new-contact-form";
 import { usePathname, useRouter } from "next/navigation";
+import { debounce } from "~/lib/functions";
 
 export type SidebarFormProps = {
   searchQuery?: string;
@@ -11,11 +12,21 @@ export type SidebarFormProps = {
 export function SidebarForm({ searchQuery }: SidebarFormProps) {
   const router = useRouter();
   const path = usePathname();
+  const formRef = React.useRef<HTMLFormElement>(null);
+
+  const submitForm = React.useCallback(
+    debounce(() => {
+      formRef.current?.requestSubmit();
+    }),
+    []
+  );
+
   return (
     <>
       <div>
         <form
           id="search-form"
+          ref={formRef}
           role="search"
           method="get"
           onSubmit={(e) => {
@@ -33,11 +44,12 @@ export function SidebarForm({ searchQuery }: SidebarFormProps) {
             id="q"
             aria-label="Search contacts"
             placeholder="Search"
+            autoComplete="off"
             type="search"
             name="q"
             defaultValue={searchQuery}
             onChange={(e) => {
-              e.currentTarget.form?.requestSubmit();
+              submitForm();
             }}
           />
           <div id="search-spinner" aria-hidden hidden={true} />

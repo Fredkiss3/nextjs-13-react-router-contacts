@@ -8,27 +8,25 @@ import { db } from "~/lib/db";
 import { contacts } from "~/app/(models)/contact";
 import { asc, eq, sql } from "drizzle-orm";
 import { z } from "zod";
+import { wait } from "~/lib/functions";
 
 const contactSchema = z.object({
-  first: z.string(),
-  last: z.string(),
-  avatar: z.string(),
-  twitter: z.string(),
-  notes: z.string(),
+  first: z.string().trim(),
+  last: z.string().trim(),
+  avatar: z.string().trim(),
+  twitter: z.string().trim(),
+  notes: z.string().trim(),
 });
 
 export async function searchContactByName(query: string) {
+  const searchStr = query.toLowerCase().trim() + "%";
   return await db
     .select({
       id: contacts.id,
     })
     .from(contacts)
     .where(
-      sql`lower(${contacts.first}) LIKE "${query
-        .toLowerCase()
-        .trim()}%" or lower(${contacts.last}) LIKE "${query
-        .toLowerCase()
-        .trim()}%"`
+      sql`lower(${contacts.first}) LIKE ${searchStr} or lower(${contacts.last}) LIKE ${searchStr}`
     )
     .orderBy(asc(contacts.createdAt))
     .all();
@@ -50,13 +48,17 @@ export async function getAllContactIds() {
     }
   );
 
-  return fn();
+  return await fn();
 }
 
 export async function getContactDetail(id: number) {
   const fn = nextCache(
     async (id: number) => {
-      return db.select().from(contacts).where(eq(contacts.id, id)).get();
+      return (
+        (await db.query.contacts.findFirst({
+          where: (fields, { eq }) => eq(fields.id, id),
+        })) ?? null
+      );
     },
     {
       tags: contactKeys.detail(id.toString()),
@@ -72,6 +74,9 @@ export async function deleteContact(fd: FormData) {
     .where(eq(contacts.id, Number(id)))
     .run();
   revalidateTag(contactKeys.allKey());
+  // FIXME remove this code when this PR is merged : https://github.com/vercel/next.js/pull/51887
+  await wait(100);
+  revalidateTag(contactKeys.singleKey(id));
 
   if (isSSR()) {
     redirect("/");
@@ -123,6 +128,8 @@ export async function favoriteContact(formData: FormData) {
   const id = formData.get("id")!.toString();
 
   const contact = await getContactDetail(Number(id));
+
+  if (!contact) return;
 
   await db
     .update(contacts)

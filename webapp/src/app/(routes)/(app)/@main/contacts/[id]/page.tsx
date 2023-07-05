@@ -7,7 +7,7 @@ import { DeleteForm } from "~/app/(components)/delete-form";
 import { FavoriteForm } from "~/app/(components)/favorite-form";
 
 // utils
-import { renderMarkdown } from "~/lib/functions";
+import { renderMarkdown } from "~/lib/server-utils";
 import { notFound } from "next/navigation";
 import { getContactDetail } from "~/app/(actions)/contacts";
 

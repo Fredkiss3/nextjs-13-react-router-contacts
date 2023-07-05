@@ -1,4 +1,6 @@
 import "server-only";
+import { Remarkable } from "remarkable";
+import { linkify } from "remarkable/linkify";
 import { headers } from "next/headers";
 import { unstable_cache } from "next/cache";
 
@@ -14,4 +16,14 @@ export function nextCache<T extends Callback>(
   }
 ) {
   return unstable_cache(cb, [], options);
+}
+
+export function renderMarkdown(markdown: string): string {
+  return new Remarkable("full", {
+    html: true,
+    breaks: true,
+    typographer: true,
+  })
+    .use(linkify)
+    .render(markdown);
 }
