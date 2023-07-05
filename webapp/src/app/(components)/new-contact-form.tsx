@@ -15,9 +15,13 @@ export function NewContactForm() {
           e.preventDefault();
           React.startTransition(
             () =>
-              void createContact().then((id) => {
+              void createContact().then((newContactId) => {
                 router.refresh();
-                router.push(`/contacts/${id}/edit`);
+
+                console.log({
+                  newContactId,
+                });
+                router.push(`/contacts/${newContactId}/edit`);
               })
           );
         }}

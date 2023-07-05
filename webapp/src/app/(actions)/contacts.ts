@@ -35,11 +35,6 @@ export async function searchContactByName(query: string) {
 }
 
 export async function getAllContactIds() {
-  //   return fetch(`${process.env.API_SERVER}/contacts`, {
-  //     next: {
-  //       tags: contactKeys.all(),
-  //     },
-  //   }).then((r) => r.json() as Promise<Contact[]>);
   const fn = nextCache(
     async () => {
       return await db
@@ -59,14 +54,6 @@ export async function getAllContactIds() {
 }
 
 export async function getContactDetail(id: number) {
-  //   return await fetch(`${process.env.API_SERVER}/contacts/${id}`, {
-  //     next: {
-  //       tags: contactKeys.detail(id.toString()),
-  //     },
-  //   }).then((r) => {
-  //     if (r.status === 404) return null;
-  //     return r.json() as Promise<Contact>;
-  //   });
   const fn = nextCache(
     async (id: number) => {
       return db.select().from(contacts).where(eq(contacts.id, id)).get();
@@ -79,12 +66,6 @@ export async function getContactDetail(id: number) {
 }
 
 export async function deleteContact(fd: FormData) {
-  //   await fetch(
-  //     `${process.env.API_SERVER}/contacts/${fd.get("id")!.toString()}`,
-  //     {
-  //       method: "DELETE",
-  //     }
-  //   );
   const id = fd.get("id")!.toString();
   await db
     .delete(contacts)
@@ -98,17 +79,11 @@ export async function deleteContact(fd: FormData) {
 }
 
 export async function createContact() {
-  //   const res = await fetch(`${process.env.API_SERVER}/contacts`, {
-  //     method: "POST",
-  //     headers: {
-  //       "content-type": "application/json",
-  //     },
-  //     body: JSON.stringify({ createdAt: Date.now() }),
-  //   }).then((res) => res.json() as Promise<{ id: string }>);
   const res = await db
     .insert(contacts)
     .values({
       favorite: false,
+      createdAt: new Date(),
     })
     .returning({ insertedId: contacts.id })
     .get();
@@ -137,14 +112,6 @@ export async function updateContact(fd: FormData) {
     .where(eq(contacts.id, Number(id)))
     .run();
 
-  //   await fetch(`${process.env.API_SERVER}/contacts/${id}`, {
-  //     method: "PUT",
-  //     headers: {
-  //       "Content-Type": "application/json",
-  //     },
-  //     body: JSON.stringify(updates),
-  //   });
-
   revalidateTag(contactKeys.singleKey(id));
 
   if (isSSR()) {
@@ -162,21 +129,6 @@ export async function favoriteContact(formData: FormData) {
     .set({ favorite: !contact.favorite })
     .where(eq(contacts.id, Number(id)))
     .run();
-
-  //   const contact = await fetch(`${process.env.API_SERVER}/contacts/${id}`).then(
-  //     (r) => {
-  //       if (r.status === 404) return null;
-  //       return r.json() as Promise<Contact>;
-  //     }
-  //   );
-
-  //   await fetch(`${process.env.API_SERVER}/contacts/${id}`, {
-  //     method: "PUT",
-  //     headers: {
-  //       "Content-Type": "application/json",
-  //     },
-  //     body: JSON.stringify({ ...contact, favorite: !contact!.favorite }),
-  //   });
 
   revalidateTag(contactKeys.singleKey(id));
 
