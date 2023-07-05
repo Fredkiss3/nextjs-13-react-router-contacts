@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import { useRouter } from "next/navigation";
-import { createContact } from "../_actions";
+import { createContact } from "~/app/(actions)/contacts";
 
 export function NewContactForm() {
   const router = useRouter();
@@ -15,7 +15,7 @@ export function NewContactForm() {
           e.preventDefault();
           React.startTransition(
             () =>
-              void createContact(new FormData(e.currentTarget)).then((id) => {
+              void createContact().then((id) => {
                 router.refresh();
                 router.push(`/contacts/${id}/edit`);
               })

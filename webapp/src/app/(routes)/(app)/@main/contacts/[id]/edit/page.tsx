@@ -1,5 +1,5 @@
-import { EditForm } from "./edit-form";
-import { getContactDetail } from "~/_actions";
+import { EditForm } from "~/app/(components)/edit-form";
+import { getContactDetail } from "~/app/(actions)/contacts";
 import { notFound } from "next/navigation";
 
 export default async function EditFormPage({

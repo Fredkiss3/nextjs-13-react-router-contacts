@@ -8,10 +8,14 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "info": "next info"
+    "info": "next info",
+    "db:push": "set -a; source .env; set +a && drizzle-kit push:sqlite",
+    "db:studio": "set -a; source .env; set +a && drizzle-kit studio"
   },
   "dependencies": {
+    "@libsql/client": "^0.2.2",
     "@t3-oss/env-nextjs": "^0.6.0",
+    "drizzle-orm": "^0.27.0",
     "next": "13.4.8",
     "react": "18.2.0",
     "react-dom": "18.2.0",
@@ -26,6 +30,7 @@
     "@types/react": "18.2.14",
     "@types/react-dom": "18.2.6",
     "@types/remarkable": "^2.0.3",
+    "drizzle-kit": "^0.19.3",
     "eslint": "8.26.0",
     "eslint-config-next": "13.0.0",
     "typescript": "5.1.6"

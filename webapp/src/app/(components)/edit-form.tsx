@@ -6,10 +6,10 @@ import Link from "next/link";
 
 // utils
 import { useRouter } from "next/navigation";
-import { updateContact } from "~/_actions";
+import { updateContact } from "~/app/(actions)/contacts";
 
 // types
-import type { Contact } from "~/types";
+import type { Contact } from "~/app/(models)/contact";
 
 export function EditForm({ contact }: { contact: Contact }) {
   const router = useRouter();
@@ -39,14 +39,14 @@ export function EditForm({ contact }: { contact: Contact }) {
             aria-label="First name"
             type="text"
             name="first"
-            defaultValue={contact.first}
+            defaultValue={contact.first ?? ""}
           />
           <input
             placeholder="Last"
             aria-label="Last name"
             type="text"
             name="last"
-            defaultValue={contact.last}
+            defaultValue={contact.last ?? ""}
           />
 
           <input type="hidden" name="id" value={contact.id} />
@@ -56,8 +56,8 @@ export function EditForm({ contact }: { contact: Contact }) {
           <input
             type="text"
             name="twitter"
-            placeholder="@jack"
-            defaultValue={contact.twitter}
+            placeholder="ex: fredkiss3"
+            defaultValue={contact.twitter ?? ""}
           />
         </label>
         <label>
@@ -67,12 +67,12 @@ export function EditForm({ contact }: { contact: Contact }) {
             aria-label="Avatar URL"
             type="text"
             name="avatar"
-            defaultValue={contact.avatar}
+            defaultValue={contact.avatar ?? ""}
           />
         </label>
         <label>
           <span>Notes</span>
-          <textarea name="notes" defaultValue={contact.notes} rows={6} />
+          <textarea name="notes" defaultValue={contact.notes ?? ""} rows={6} />
         </label>
         <p>
           <button type="submit" disabled={isPending}>

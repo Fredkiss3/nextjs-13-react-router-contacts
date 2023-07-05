@@ -3,13 +3,13 @@ import * as React from "react";
 // components
 import Image from "next/image";
 import Link from "next/link";
-import { DeleteForm } from "./delete-form";
-import { FavoriteForm } from "./favorite-form";
+import { DeleteForm } from "~/app/(components)/delete-form";
+import { FavoriteForm } from "~/app/(components)/favorite-form";
 
 // utils
-import { renderMarkdown } from "~/(app)/functions";
+import { renderMarkdown } from "~/lib/functions";
 import { notFound } from "next/navigation";
-import { getContactDetail } from "~/_actions";
+import { getContactDetail } from "~/app/(actions)/contacts";
 
 // types
 import type { Metadata } from "next";
@@ -70,7 +70,7 @@ export default async function ContactPage({
           ) : (
             <i>No Name</i>
           )}
-          <FavoriteForm contact={contact} />
+          <FavoriteForm isFavorite={contact.favorite} contactId={contact.id} />
         </h1>
 
         {contact.twitter && (

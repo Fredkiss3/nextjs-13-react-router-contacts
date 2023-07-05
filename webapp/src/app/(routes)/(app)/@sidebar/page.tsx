@@ -1,4 +1,4 @@
-import { Sidebar } from "./sidebar";
+import { Sidebar } from "~/app/(components)/sidebar";
 
 export default function SidebarPage(props: {
   searchParams: { q: string } | undefined;

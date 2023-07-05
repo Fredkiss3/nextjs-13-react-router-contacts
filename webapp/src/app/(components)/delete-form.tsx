@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import { useRouter } from "next/navigation";
-import { deleteContact } from "~/_actions";
+import { deleteContact } from "~/app/(actions)/contacts";
 
 export function DeleteForm({ contactId }: { contactId: number }) {
   const router = useRouter();

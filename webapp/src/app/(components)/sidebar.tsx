@@ -1,12 +1,16 @@
 import * as React from "react";
 
 // components
-import { NavLink } from "~/(app)/nav-link";
+import { NavLink } from "~/app/(components)/nav-link";
 import { SidebarForm } from "./sidebar-form";
 
 // utils
-import { getAllContacts, getContactDetail } from "~/_actions";
-import { isSSR } from "~/server-utils";
+import {
+  getAllContactIds,
+  getContactDetail,
+  searchContactByName,
+} from "~/app/(actions)/contacts";
+import { isSSR } from "~/lib/server-utils";
 
 // types
 export type SidebarProps = {
@@ -14,19 +18,10 @@ export type SidebarProps = {
 };
 
 export async function Sidebar({ query = "" }: SidebarProps) {
-  const contacts = await getAllContacts();
-
   const filteredContacts =
-    query.length === 0
-      ? contacts
-      : contacts.filter((c) => {
-          return (
-            c.first
-              ?.toLocaleLowerCase()
-              .startsWith(query.toLocaleLowerCase()) ||
-            c.last?.toLocaleLowerCase().startsWith(query?.toLocaleLowerCase())
-          );
-        });
+    query.length > 0
+      ? await searchContactByName(query)
+      : await getAllContactIds();
 
   return (
     <>
