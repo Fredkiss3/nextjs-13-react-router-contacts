@@ -15,7 +15,7 @@ export function nextCache<T extends Callback>(
     tags: string[];
   }
 ) {
-  return unstable_cache(cb, [], options);
+  return unstable_cache(cb, options.tags, options);
 }
 
 export function renderMarkdown(markdown: string): string {
