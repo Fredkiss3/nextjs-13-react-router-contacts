@@ -75,10 +75,10 @@ export function EditForm({ contact }: { contact: Contact }) {
           <textarea name="notes" defaultValue={contact.notes ?? ""} rows={6} />
         </label>
         <p>
-          <button type="submit" disabled={isPending}>
+          <button type="submit" disabled={isPending} className={`edit-button`}>
             {isPending ? "saving..." : "Save"}
           </button>
-          <Link href={`/contacts/${contact.id}`} className={`cancel-button`}>
+          <Link href={`/contacts/${contact.id}`} className="button">
             Cancel
           </Link>
         </p>

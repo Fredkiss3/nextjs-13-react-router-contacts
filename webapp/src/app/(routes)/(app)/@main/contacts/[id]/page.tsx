@@ -78,6 +78,7 @@ export default async function ContactPage({
             <a
               target="_blank"
               rel="noreferrer"
+              className="github_handle"
               href={`https://github.com/${contact.twitter}`}
             >
               {contact.twitter}

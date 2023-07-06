@@ -12,6 +12,7 @@ export function FavoriteForm({
       <input type="hidden" name="id" value={contactId} />
       <button
         name="favorite"
+        className="favorite-button"
         value={isFavorite ? "false" : "true"}
         aria-label={isFavorite ? "Remove from favorites" : "Add to favorites"}
       >

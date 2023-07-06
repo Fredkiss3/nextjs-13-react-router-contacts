@@ -26,7 +26,9 @@ export function NewContactForm() {
           );
         }}
       >
-        <button type="submit">New</button>
+        <button className="edit-button" type="submit">
+          New
+        </button>
       </form>
     </>
   );

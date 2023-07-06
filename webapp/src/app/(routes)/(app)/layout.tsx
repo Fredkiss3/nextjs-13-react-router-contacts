@@ -1,4 +1,4 @@
-import Image from "next/image";
+import { Logo } from "~/app/(components)/logo";
 
 export default async function MainLayout({
   children,
@@ -18,7 +18,7 @@ export default async function MainLayout({
     >
       <aside id="sidebar">
         <h1 style={{ display: "flex", gap: "1rem" }}>
-          <Image src="/nextjs.svg" alt="NextJS Logo" width={72} height={16} />{" "}
+          <Logo />
           13 Contacts
         </h1>
 

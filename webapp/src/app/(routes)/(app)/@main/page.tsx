@@ -1,10 +1,10 @@
-import Image from "next/image";
+import { Logo } from "~/app/(components)/logo";
 
 export default function Home() {
   return (
     <section>
       <p id="zero-state">
-        <Image src="/nextjs.svg" alt="NextJS Logo" width={72} height={16} />
+        <Logo />
         <br />
         This is a demo for NextJS 13
         <br />
