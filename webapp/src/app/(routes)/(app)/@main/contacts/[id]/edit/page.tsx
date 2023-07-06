@@ -2,6 +2,26 @@ import { EditForm } from "~/app/(components)/edit-form";
 import { getContactDetail } from "~/app/(actions)/contacts";
 import { notFound } from "next/navigation";
 
+import type { Metadata } from "next";
+
+export async function generateMetadata({
+  params,
+}: {
+  params: {
+    id: string;
+  };
+}): Promise<Metadata> {
+  const contact = await getContactDetail(Number(params.id));
+
+  if (!contact) {
+    notFound();
+  }
+
+  return {
+    title: `Edit contact : ${contact.twitter}`,
+  };
+}
+
 export default async function EditFormPage({
   params,
 }: {
