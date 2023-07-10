@@ -7,8 +7,6 @@ export const metadata = {
 };
 
 export const runtime = "edge";
-// FIXME: we are adding this until we are sure this issue is fixed https://github.com/vercel/next.js/issues/52405
-export const fetchCache = "force-no-store";
 
 export default async function RootLayout({
   children,
