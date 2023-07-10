@@ -1,0 +1,474 @@
+diff --git a/lib-cjs/http/stream.js b/lib-cjs/http/stream.js
+index e2aa9c8df433fc04278a1b5ca7201799ab3012be..c51fa0d47f0d787317e1d87e71e34cdfc483acc3 100644
+--- a/lib-cjs/http/stream.js
++++ b/lib-cjs/http/stream.js
+@@ -41,10 +41,13 @@ class HttpStream extends stream_js_1.Stream {
+             closed: undefined,
+         };
+         this.#sendStreamRequest({
+-            "type": "store_sql",
+-            "sql_id": sqlId,
+-            "sql": sql,
+-        }).then(() => undefined, (error) => this.#setClosed(error));
++            type: "store_sql",
++            sql_id: sqlId,
++            sql: sql,
++        }).then(
++            () => undefined,
++            (error) => this.#setClosed(error)
++        );
+         return new sql_js_1.Sql(this, sqlState);
+     }
+     /** @private */
+@@ -54,15 +57,18 @@ class HttpStream extends stream_js_1.Stream {
+         }
+         sqlState.closed = error;
+         this.#sendStreamRequest({
+-            "type": "close_sql",
+-            "sql_id": sqlState.sqlId,
+-        }).then(() => this.#sqlIdAlloc.free(sqlState.sqlId), (error) => this.#setClosed(error));
++            type: "close_sql",
++            sql_id: sqlState.sqlId,
++        }).then(
++            () => this.#sqlIdAlloc.free(sqlState.sqlId),
++            (error) => this.#setClosed(error)
++        );
+     }
+     /** @private */
+     _execute(stmt) {
+         return this.#sendStreamRequest({
+-            "type": "execute",
+-            "stmt": stmt,
++            type: "execute",
++            stmt: stmt,
+         }).then((response) => {
+             return response["result"];
+         });
+@@ -70,8 +76,8 @@ class HttpStream extends stream_js_1.Stream {
+     /** @private */
+     _batch(batch) {
+         return this.#sendStreamRequest({
+-            "type": "batch",
+-            "batch": batch,
++            type: "batch",
++            batch: batch,
+         }).then((response) => {
+             return response["result"];
+         });
+@@ -79,9 +85,9 @@ class HttpStream extends stream_js_1.Stream {
+     /** @private */
+     _describe(protoSql) {
+         return this.#sendStreamRequest({
+-            "type": "describe",
+-            "sql": protoSql.sql,
+-            "sql_id": protoSql.sqlId,
++            type: "describe",
++            sql: protoSql.sql,
++            sql_id: protoSql.sqlId,
+         }).then((response) => {
+             return response["result"];
+         });
+@@ -89,20 +95,24 @@ class HttpStream extends stream_js_1.Stream {
+     /** @private */
+     _sequence(protoSql) {
+         return this.#sendStreamRequest({
+-            "type": "sequence",
+-            "sql": protoSql.sql,
+-            "sql_id": protoSql.sqlId,
++            type: "sequence",
++            sql: protoSql.sql,
++            sql_id: protoSql.sqlId,
+         }).then((_response) => {
+             return undefined;
+         });
+     }
+     /** Close the stream. */
+     close() {
+-        this.#setClosed(new errors_js_1.ClientError("Stream was manually closed"));
++        this.#setClosed(
++            new errors_js_1.ClientError("Stream was manually closed")
++        );
+     }
+     /** @private */
+     _closeFromClient() {
+-        this.#setClosed(new errors_js_1.ClosedError("Client was closed", undefined));
++        this.#setClosed(
++            new errors_js_1.ClosedError("Client was closed", undefined)
++        );
+     }
+     /** True if the stream is closed. */
+     get closed() {
+@@ -114,18 +124,24 @@ class HttpStream extends stream_js_1.Stream {
+         }
+         this.#closed = error;
+         this.#client._streamClosed(this);
+-        if (this.#baton !== null || this.#pipeline.length !== 0 || this.#pipelineInProgress) {
++        if (
++            this.#baton !== null ||
++            this.#pipeline.length !== 0 ||
++            this.#pipelineInProgress
++        ) {
+             this.#pipeline.push({
+-                request: { "type": "close" },
+-                responseCallback() { },
+-                errorCallback() { },
++                request: { type: "close" },
++                responseCallback() {},
++                errorCallback() {},
+             });
+             this.#flushPipeline();
+         }
+     }
+     #sendStreamRequest(request) {
+         if (this.#closed !== undefined) {
+-            return Promise.reject(new errors_js_1.ClosedError("Stream is closed", this.#closed));
++            return Promise.reject(
++                new errors_js_1.ClosedError("Stream is closed", this.#closed)
++            );
+         }
+         return new Promise((responseCallback, errorCallback) => {
+             this.#pipeline.push({ request, responseCallback, errorCallback });
+@@ -141,33 +157,37 @@ class HttpStream extends stream_js_1.Stream {
+         const promise = (0, isomorphic_fetch_1.fetch)(request);
+         this.#pipelineInProgress = true;
+         this.#pipeline.length = 0;
+-        promise.then((resp) => {
+-            if (!resp.ok) {
+-                return errorFromResponse(resp).then((error) => {
+-                    throw error;
+-                });
+-            }
+-            return resp.json();
+-        }).then((respJson) => {
+-            const respBody = respJson;
+-            this.#baton = respBody["baton"] ?? null;
+-            this.#baseUrl = respBody["base_url"] ?? this.#baseUrl;
+-            handlePipelineResponse(pipeline, respBody);
+-        }).catch((error) => {
+-            this.#setClosed(error);
+-            for (const entry of pipeline) {
+-                entry.errorCallback(error);
+-            }
+-        }).finally(() => {
+-            this.#pipelineInProgress = false;
+-            this.#flushPipeline();
+-        });
++        promise
++            .then((resp) => {
++                if (!resp.ok) {
++                    return errorFromResponse(resp).then((error) => {
++                        throw error;
++                    });
++                }
++                return resp.json();
++            })
++            .then((respJson) => {
++                const respBody = respJson;
++                this.#baton = respBody["baton"] ?? null;
++                this.#baseUrl = respBody["base_url"] ?? this.#baseUrl;
++                handlePipelineResponse(pipeline, respBody);
++            })
++            .catch((error) => {
++                this.#setClosed(error);
++                for (const entry of pipeline) {
++                    entry.errorCallback(error);
++                }
++            })
++            .finally(() => {
++                this.#pipelineInProgress = false;
++                this.#flushPipeline();
++            });
+     }
+     #createPipelineRequest(pipeline) {
+         const url = new URL("v2/pipeline", this.#baseUrl);
+         const requestBody = {
+-            "baton": this.#baton,
+-            "requests": pipeline.map((entry) => entry.request),
++            baton: this.#baton,
++            requests: pipeline.map((entry) => entry.request),
+         };
+         const headers = new isomorphic_fetch_1.Headers();
+         if (this.#jwt !== null) {
+@@ -177,28 +197,36 @@ class HttpStream extends stream_js_1.Stream {
+             method: "POST",
+             headers,
+             body: JSON.stringify(requestBody),
++            // do not cache when using nextjs
++            cache: "no-store",
+         });
+     }
+ }
+ exports.HttpStream = HttpStream;
+ function handlePipelineResponse(pipeline, respBody) {
+     if (respBody["results"].length !== pipeline.length) {
+-        throw new errors_js_1.ProtoError("Server returned unexpected number of pipeline results");
++        throw new errors_js_1.ProtoError(
++            "Server returned unexpected number of pipeline results"
++        );
+     }
+     for (let i = 0; i < pipeline.length; ++i) {
+         const result = respBody["results"][i];
+         const entry = pipeline[i];
+         if (result["type"] === "ok") {
+             if (result["response"]["type"] !== entry.request["type"]) {
+-                throw new errors_js_1.ProtoError("Received unexpected type of response");
++                throw new errors_js_1.ProtoError(
++                    "Received unexpected type of response"
++                );
+             }
+             entry.responseCallback(result["response"]);
+-        }
+-        else if (result["type"] === "error") {
+-            entry.errorCallback((0, result_js_1.errorFromProto)(result["error"]));
+-        }
+-        else {
+-            throw new errors_js_1.ProtoError("Received unexpected type of result");
++        } else if (result["type"] === "error") {
++            entry.errorCallback(
++                (0, result_js_1.errorFromProto)(result["error"])
++            );
++        } else {
++            throw new errors_js_1.ProtoError(
++                "Received unexpected type of result"
++            );
+         }
+     }
+ }
+@@ -218,7 +246,8 @@ async function errorFromResponse(resp) {
+         }
+     }
+     if (resp.status === 404) {
+-        message += ". It seems that the libsql server is outdated, please try updating the database.";
++        message +=
++            ". It seems that the libsql server is outdated, please try updating the database.";
+     }
+     return new errors_js_1.HttpServerError(message, resp.status);
+ }
+diff --git a/lib-esm/http/stream.js b/lib-esm/http/stream.js
+index 186af16d9a6088b05f4bc2ac33ae9844e1a2ff69..38bab963f985b2b2d46de130bcc8023bf839a549 100644
+--- a/lib-esm/http/stream.js
++++ b/lib-esm/http/stream.js
+@@ -1,5 +1,10 @@
+ import { fetch, Request, Headers } from "@libsql/isomorphic-fetch";
+-import { ClientError, HttpServerError, ProtoError, ClosedError } from "../errors.js";
++import {
++    ClientError,
++    HttpServerError,
++    ProtoError,
++    ClosedError,
++} from "../errors.js";
+ import { IdAlloc } from "../id_alloc.js";
+ import { queueMicrotask } from "../ponyfill.js";
+ import { errorFromProto } from "../result.js";
+@@ -38,10 +43,13 @@ export class HttpStream extends Stream {
+             closed: undefined,
+         };
+         this.#sendStreamRequest({
+-            "type": "store_sql",
+-            "sql_id": sqlId,
+-            "sql": sql,
+-        }).then(() => undefined, (error) => this.#setClosed(error));
++            type: "store_sql",
++            sql_id: sqlId,
++            sql: sql,
++        }).then(
++            () => undefined,
++            (error) => this.#setClosed(error)
++        );
+         return new Sql(this, sqlState);
+     }
+     /** @private */
+@@ -51,15 +59,18 @@ export class HttpStream extends Stream {
+         }
+         sqlState.closed = error;
+         this.#sendStreamRequest({
+-            "type": "close_sql",
+-            "sql_id": sqlState.sqlId,
+-        }).then(() => this.#sqlIdAlloc.free(sqlState.sqlId), (error) => this.#setClosed(error));
++            type: "close_sql",
++            sql_id: sqlState.sqlId,
++        }).then(
++            () => this.#sqlIdAlloc.free(sqlState.sqlId),
++            (error) => this.#setClosed(error)
++        );
+     }
+     /** @private */
+     _execute(stmt) {
+         return this.#sendStreamRequest({
+-            "type": "execute",
+-            "stmt": stmt,
++            type: "execute",
++            stmt: stmt,
+         }).then((response) => {
+             return response["result"];
+         });
+@@ -67,8 +78,8 @@ export class HttpStream extends Stream {
+     /** @private */
+     _batch(batch) {
+         return this.#sendStreamRequest({
+-            "type": "batch",
+-            "batch": batch,
++            type: "batch",
++            batch: batch,
+         }).then((response) => {
+             return response["result"];
+         });
+@@ -76,9 +87,9 @@ export class HttpStream extends Stream {
+     /** @private */
+     _describe(protoSql) {
+         return this.#sendStreamRequest({
+-            "type": "describe",
+-            "sql": protoSql.sql,
+-            "sql_id": protoSql.sqlId,
++            type: "describe",
++            sql: protoSql.sql,
++            sql_id: protoSql.sqlId,
+         }).then((response) => {
+             return response["result"];
+         });
+@@ -86,9 +97,9 @@ export class HttpStream extends Stream {
+     /** @private */
+     _sequence(protoSql) {
+         return this.#sendStreamRequest({
+-            "type": "sequence",
+-            "sql": protoSql.sql,
+-            "sql_id": protoSql.sqlId,
++            type: "sequence",
++            sql: protoSql.sql,
++            sql_id: protoSql.sqlId,
+         }).then((_response) => {
+             return undefined;
+         });
+@@ -111,18 +122,24 @@ export class HttpStream extends Stream {
+         }
+         this.#closed = error;
+         this.#client._streamClosed(this);
+-        if (this.#baton !== null || this.#pipeline.length !== 0 || this.#pipelineInProgress) {
++        if (
++            this.#baton !== null ||
++            this.#pipeline.length !== 0 ||
++            this.#pipelineInProgress
++        ) {
+             this.#pipeline.push({
+-                request: { "type": "close" },
+-                responseCallback() { },
+-                errorCallback() { },
++                request: { type: "close" },
++                responseCallback() {},
++                errorCallback() {},
+             });
+             this.#flushPipeline();
+         }
+     }
+     #sendStreamRequest(request) {
+         if (this.#closed !== undefined) {
+-            return Promise.reject(new ClosedError("Stream is closed", this.#closed));
++            return Promise.reject(
++                new ClosedError("Stream is closed", this.#closed)
++            );
+         }
+         return new Promise((responseCallback, errorCallback) => {
+             this.#pipeline.push({ request, responseCallback, errorCallback });
+@@ -138,33 +155,37 @@ export class HttpStream extends Stream {
+         const promise = fetch(request);
+         this.#pipelineInProgress = true;
+         this.#pipeline.length = 0;
+-        promise.then((resp) => {
+-            if (!resp.ok) {
+-                return errorFromResponse(resp).then((error) => {
+-                    throw error;
+-                });
+-            }
+-            return resp.json();
+-        }).then((respJson) => {
+-            const respBody = respJson;
+-            this.#baton = respBody["baton"] ?? null;
+-            this.#baseUrl = respBody["base_url"] ?? this.#baseUrl;
+-            handlePipelineResponse(pipeline, respBody);
+-        }).catch((error) => {
+-            this.#setClosed(error);
+-            for (const entry of pipeline) {
+-                entry.errorCallback(error);
+-            }
+-        }).finally(() => {
+-            this.#pipelineInProgress = false;
+-            this.#flushPipeline();
+-        });
++        promise
++            .then((resp) => {
++                if (!resp.ok) {
++                    return errorFromResponse(resp).then((error) => {
++                        throw error;
++                    });
++                }
++                return resp.json();
++            })
++            .then((respJson) => {
++                const respBody = respJson;
++                this.#baton = respBody["baton"] ?? null;
++                this.#baseUrl = respBody["base_url"] ?? this.#baseUrl;
++                handlePipelineResponse(pipeline, respBody);
++            })
++            .catch((error) => {
++                this.#setClosed(error);
++                for (const entry of pipeline) {
++                    entry.errorCallback(error);
++                }
++            })
++            .finally(() => {
++                this.#pipelineInProgress = false;
++                this.#flushPipeline();
++            });
+     }
+     #createPipelineRequest(pipeline) {
+         const url = new URL("v2/pipeline", this.#baseUrl);
+         const requestBody = {
+-            "baton": this.#baton,
+-            "requests": pipeline.map((entry) => entry.request),
++            baton: this.#baton,
++            requests: pipeline.map((entry) => entry.request),
+         };
+         const headers = new Headers();
+         if (this.#jwt !== null) {
+@@ -174,12 +195,16 @@ export class HttpStream extends Stream {
+             method: "POST",
+             headers,
+             body: JSON.stringify(requestBody),
++            // do not cache when using nextjs
++            cache: "no-store",
+         });
+     }
+ }
+ function handlePipelineResponse(pipeline, respBody) {
+     if (respBody["results"].length !== pipeline.length) {
+-        throw new ProtoError("Server returned unexpected number of pipeline results");
++        throw new ProtoError(
++            "Server returned unexpected number of pipeline results"
++        );
+     }
+     for (let i = 0; i < pipeline.length; ++i) {
+         const result = respBody["results"][i];
+@@ -189,11 +214,9 @@ function handlePipelineResponse(pipeline, respBody) {
+                 throw new ProtoError("Received unexpected type of response");
+             }
+             entry.responseCallback(result["response"]);
+-        }
+-        else if (result["type"] === "error") {
++        } else if (result["type"] === "error") {
+             entry.errorCallback(errorFromProto(result["error"]));
+-        }
+-        else {
++        } else {
+             throw new ProtoError("Received unexpected type of result");
+         }
+     }
+@@ -214,7 +237,8 @@ async function errorFromResponse(resp) {
+         }
+     }
+     if (resp.status === 404) {
+-        message += ". It seems that the libsql server is outdated, please try updating the database.";
++        message +=
++            ". It seems that the libsql server is outdated, please try updating the database.";
+     }
+     return new HttpServerError(message, resp.status);
+ }

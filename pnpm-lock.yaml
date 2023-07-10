@@ -4,6 +4,11 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
+patchedDependencies:
+  '@libsql/hrana-client@0.4.2':
+    hash: delis43n4w6i4s6gwh7yxptoii
+    path: patches/@libsql__hrana-client@0.4.2.patch
+
 importers:
 
   .:
@@ -21,7 +26,7 @@ importers:
   webapp:
     dependencies:
       '@libsql/client':
-        specifier: ^0.2.2
+        specifier: 0.2.2
         version: 0.2.2
       '@t3-oss/env-nextjs':
         specifier: ^0.6.0
@@ -550,7 +555,7 @@ packages:
   /@libsql/client@0.2.2:
     resolution: {integrity: sha512-HDMbnQq9Ekqb4DEOqLmn2nedeFNMEYSzGhZEGJC0ILFhbUnPVFsEQ/dtUKwE1wgOr8koB/D7qmL3wpujhxvHTA==}
     dependencies:
-      '@libsql/hrana-client': 0.4.2
+      '@libsql/hrana-client': 0.4.2(patch_hash=delis43n4w6i4s6gwh7yxptoii)
       better-sqlite3: 8.4.0
       js-base64: 3.7.5
     transitivePeerDependencies:
@@ -559,7 +564,7 @@ packages:
       - utf-8-validate
     dev: false
 
-  /@libsql/hrana-client@0.4.2:
+  /@libsql/hrana-client@0.4.2(patch_hash=delis43n4w6i4s6gwh7yxptoii):
     resolution: {integrity: sha512-62ACYRD8ATBVnZCScFmWnSiqhQgmKo2ktkgSBFqiur27pBlA4XnwnJnajIaXqwnjVsIvXExih9Gk9zfTfvqrIA==}
     dependencies:
       '@libsql/isomorphic-fetch': 0.1.4
@@ -570,6 +575,7 @@ packages:
       - encoding
       - utf-8-validate
     dev: false
+    patched: true
 
   /@libsql/isomorphic-fetch@0.1.4:
     resolution: {integrity: sha512-eRgV4b1d6RVLciafGEKZghDOvrQ7fDuPgfGzelsfPz1HxFERaTQuOwL5FthZcKBtHI6Wqu5zmhUu5bREZr1mpA==}

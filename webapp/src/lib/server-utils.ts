@@ -16,7 +16,8 @@ export function nextCache<T extends Callback>(
   }
 ) {
   // FIXME: until we are sure this issue is fixed https://github.com/vercel/next.js/issues/52405,
-  // -> we are returning the callback directly to not have other stupid bugs
+  // -> we are returning the callback directly because i patched `@libsql` to use `cache: "no-store"`
+  // but it seems like it can't be used within `unstable_cache`
   return cb;
   return unstable_cache(cb, options.tags, options);
 }
