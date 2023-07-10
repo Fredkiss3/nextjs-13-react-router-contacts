@@ -6,7 +6,7 @@ settings:
 
 patchedDependencies:
   '@libsql/hrana-client@0.4.2':
-    hash: delis43n4w6i4s6gwh7yxptoii
+    hash: 5fmfce54mm5hx443zehija4dnu
     path: patches/@libsql__hrana-client@0.4.2.patch
 
 importers:
@@ -555,7 +555,7 @@ packages:
   /@libsql/client@0.2.2:
     resolution: {integrity: sha512-HDMbnQq9Ekqb4DEOqLmn2nedeFNMEYSzGhZEGJC0ILFhbUnPVFsEQ/dtUKwE1wgOr8koB/D7qmL3wpujhxvHTA==}
     dependencies:
-      '@libsql/hrana-client': 0.4.2(patch_hash=delis43n4w6i4s6gwh7yxptoii)
+      '@libsql/hrana-client': 0.4.2(patch_hash=5fmfce54mm5hx443zehija4dnu)
       better-sqlite3: 8.4.0
       js-base64: 3.7.5
     transitivePeerDependencies:
@@ -564,7 +564,7 @@ packages:
       - utf-8-validate
     dev: false
 
-  /@libsql/hrana-client@0.4.2(patch_hash=delis43n4w6i4s6gwh7yxptoii):
+  /@libsql/hrana-client@0.4.2(patch_hash=5fmfce54mm5hx443zehija4dnu):
     resolution: {integrity: sha512-62ACYRD8ATBVnZCScFmWnSiqhQgmKo2ktkgSBFqiur27pBlA4XnwnJnajIaXqwnjVsIvXExih9Gk9zfTfvqrIA==}
     dependencies:
       '@libsql/isomorphic-fetch': 0.1.4

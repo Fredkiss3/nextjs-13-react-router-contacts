@@ -1,18 +1,12 @@
 diff --git a/lib-cjs/http/stream.js b/lib-cjs/http/stream.js
-index e2aa9c8df433fc04278a1b5ca7201799ab3012be..c51fa0d47f0d787317e1d87e71e34cdfc483acc3 100644
+index e2aa9c8df433fc04278a1b5ca7201799ab3012be..e13bb303ace151fc847b058db282dddf67a3a09a 100644
 --- a/lib-cjs/http/stream.js
 +++ b/lib-cjs/http/stream.js
-@@ -41,10 +41,13 @@ class HttpStream extends stream_js_1.Stream {
-             closed: undefined,
-         };
-         this.#sendStreamRequest({
--            "type": "store_sql",
--            "sql_id": sqlId,
--            "sql": sql,
+@@ -44,7 +44,10 @@ class HttpStream extends stream_js_1.Stream {
+             "type": "store_sql",
+             "sql_id": sqlId,
+             "sql": sql,
 -        }).then(() => undefined, (error) => this.#setClosed(error));
-+            type: "store_sql",
-+            sql_id: sqlId,
-+            sql: sql,
 +        }).then(
 +            () => undefined,
 +            (error) => this.#setClosed(error)
@@ -20,15 +14,11 @@ index e2aa9c8df433fc04278a1b5ca7201799ab3012be..c51fa0d47f0d787317e1d87e71e34cdf
          return new sql_js_1.Sql(this, sqlState);
      }
      /** @private */
-@@ -54,15 +57,18 @@ class HttpStream extends stream_js_1.Stream {
-         }
-         sqlState.closed = error;
+@@ -56,7 +59,10 @@ class HttpStream extends stream_js_1.Stream {
          this.#sendStreamRequest({
--            "type": "close_sql",
--            "sql_id": sqlState.sqlId,
+             "type": "close_sql",
+             "sql_id": sqlState.sqlId,
 -        }).then(() => this.#sqlIdAlloc.free(sqlState.sqlId), (error) => this.#setClosed(error));
-+            type: "close_sql",
-+            sql_id: sqlState.sqlId,
 +        }).then(
 +            () => this.#sqlIdAlloc.free(sqlState.sqlId),
 +            (error) => this.#setClosed(error)
@@ -36,51 +26,7 @@ index e2aa9c8df433fc04278a1b5ca7201799ab3012be..c51fa0d47f0d787317e1d87e71e34cdf
      }
      /** @private */
      _execute(stmt) {
-         return this.#sendStreamRequest({
--            "type": "execute",
--            "stmt": stmt,
-+            type: "execute",
-+            stmt: stmt,
-         }).then((response) => {
-             return response["result"];
-         });
-@@ -70,8 +76,8 @@ class HttpStream extends stream_js_1.Stream {
-     /** @private */
-     _batch(batch) {
-         return this.#sendStreamRequest({
--            "type": "batch",
--            "batch": batch,
-+            type: "batch",
-+            batch: batch,
-         }).then((response) => {
-             return response["result"];
-         });
-@@ -79,9 +85,9 @@ class HttpStream extends stream_js_1.Stream {
-     /** @private */
-     _describe(protoSql) {
-         return this.#sendStreamRequest({
--            "type": "describe",
--            "sql": protoSql.sql,
--            "sql_id": protoSql.sqlId,
-+            type: "describe",
-+            sql: protoSql.sql,
-+            sql_id: protoSql.sqlId,
-         }).then((response) => {
-             return response["result"];
-         });
-@@ -89,20 +95,24 @@ class HttpStream extends stream_js_1.Stream {
-     /** @private */
-     _sequence(protoSql) {
-         return this.#sendStreamRequest({
--            "type": "sequence",
--            "sql": protoSql.sql,
--            "sql_id": protoSql.sqlId,
-+            type: "sequence",
-+            sql: protoSql.sql,
-+            sql_id: protoSql.sqlId,
-         }).then((_response) => {
-             return undefined;
-         });
+@@ -98,11 +104,15 @@ class HttpStream extends stream_js_1.Stream {
      }
      /** Close the stream. */
      close() {
@@ -109,10 +55,9 @@ index e2aa9c8df433fc04278a1b5ca7201799ab3012be..c51fa0d47f0d787317e1d87e71e34cdf
 +            this.#pipelineInProgress
 +        ) {
              this.#pipeline.push({
--                request: { "type": "close" },
+                 request: { "type": "close" },
 -                responseCallback() { },
 -                errorCallback() { },
-+                request: { type: "close" },
 +                responseCallback() {},
 +                errorCallback() {},
              });
@@ -128,7 +73,7 @@ index e2aa9c8df433fc04278a1b5ca7201799ab3012be..c51fa0d47f0d787317e1d87e71e34cdf
          }
          return new Promise((responseCallback, errorCallback) => {
              this.#pipeline.push({ request, responseCallback, errorCallback });
-@@ -141,33 +157,37 @@ class HttpStream extends stream_js_1.Stream {
+@@ -141,27 +157,31 @@ class HttpStream extends stream_js_1.Stream {
          const promise = (0, isomorphic_fetch_1.fetch)(request);
          this.#pipelineInProgress = true;
          this.#pipeline.length = 0;
@@ -181,19 +126,20 @@ index e2aa9c8df433fc04278a1b5ca7201799ab3012be..c51fa0d47f0d787317e1d87e71e34cdf
      }
      #createPipelineRequest(pipeline) {
          const url = new URL("v2/pipeline", this.#baseUrl);
-         const requestBody = {
--            "baton": this.#baton,
--            "requests": pipeline.map((entry) => entry.request),
-+            baton: this.#baton,
-+            requests: pipeline.map((entry) => entry.request),
-         };
-         const headers = new isomorphic_fetch_1.Headers();
+@@ -173,32 +193,45 @@ class HttpStream extends stream_js_1.Stream {
          if (this.#jwt !== null) {
-@@ -177,28 +197,36 @@ class HttpStream extends stream_js_1.Stream {
+             headers.set("authorization", `Bearer ${this.#jwt}`);
+         }
++
++        console.log("[PATCHED @libsql/client CJS] executing SQL statements", {
++            "requests": pipeline.map((entry) => entry.request),
++            "url": url.toString(),
++        });
+         return new isomorphic_fetch_1.Request(url, {
              method: "POST",
              headers,
              body: JSON.stringify(requestBody),
-+            // do not cache when using nextjs
++            // do not cache in next.js
 +            cache: "no-store",
          });
      }
@@ -234,7 +180,7 @@ index e2aa9c8df433fc04278a1b5ca7201799ab3012be..c51fa0d47f0d787317e1d87e71e34cdf
          }
      }
  }
-@@ -218,7 +246,8 @@ async function errorFromResponse(resp) {
+@@ -218,7 +251,8 @@ async function errorFromResponse(resp) {
          }
      }
      if (resp.status === 404) {
@@ -245,7 +191,7 @@ index e2aa9c8df433fc04278a1b5ca7201799ab3012be..c51fa0d47f0d787317e1d87e71e34cdf
      return new errors_js_1.HttpServerError(message, resp.status);
  }
 diff --git a/lib-esm/http/stream.js b/lib-esm/http/stream.js
-index 186af16d9a6088b05f4bc2ac33ae9844e1a2ff69..38bab963f985b2b2d46de130bcc8023bf839a549 100644
+index 186af16d9a6088b05f4bc2ac33ae9844e1a2ff69..25b243d375e70733bdc588587a42863eb34d7573 100644
 --- a/lib-esm/http/stream.js
 +++ b/lib-esm/http/stream.js
 @@ -1,5 +1,10 @@
@@ -260,17 +206,11 @@ index 186af16d9a6088b05f4bc2ac33ae9844e1a2ff69..38bab963f985b2b2d46de130bcc8023b
  import { IdAlloc } from "../id_alloc.js";
  import { queueMicrotask } from "../ponyfill.js";
  import { errorFromProto } from "../result.js";
-@@ -38,10 +43,13 @@ export class HttpStream extends Stream {
-             closed: undefined,
-         };
-         this.#sendStreamRequest({
--            "type": "store_sql",
--            "sql_id": sqlId,
--            "sql": sql,
+@@ -41,7 +46,10 @@ export class HttpStream extends Stream {
+             "type": "store_sql",
+             "sql_id": sqlId,
+             "sql": sql,
 -        }).then(() => undefined, (error) => this.#setClosed(error));
-+            type: "store_sql",
-+            sql_id: sqlId,
-+            sql: sql,
 +        }).then(
 +            () => undefined,
 +            (error) => this.#setClosed(error)
@@ -278,15 +218,11 @@ index 186af16d9a6088b05f4bc2ac33ae9844e1a2ff69..38bab963f985b2b2d46de130bcc8023b
          return new Sql(this, sqlState);
      }
      /** @private */
-@@ -51,15 +59,18 @@ export class HttpStream extends Stream {
-         }
-         sqlState.closed = error;
+@@ -53,7 +61,10 @@ export class HttpStream extends Stream {
          this.#sendStreamRequest({
--            "type": "close_sql",
--            "sql_id": sqlState.sqlId,
+             "type": "close_sql",
+             "sql_id": sqlState.sqlId,
 -        }).then(() => this.#sqlIdAlloc.free(sqlState.sqlId), (error) => this.#setClosed(error));
-+            type: "close_sql",
-+            sql_id: sqlState.sqlId,
 +        }).then(
 +            () => this.#sqlIdAlloc.free(sqlState.sqlId),
 +            (error) => this.#setClosed(error)
@@ -294,51 +230,6 @@ index 186af16d9a6088b05f4bc2ac33ae9844e1a2ff69..38bab963f985b2b2d46de130bcc8023b
      }
      /** @private */
      _execute(stmt) {
-         return this.#sendStreamRequest({
--            "type": "execute",
--            "stmt": stmt,
-+            type: "execute",
-+            stmt: stmt,
-         }).then((response) => {
-             return response["result"];
-         });
-@@ -67,8 +78,8 @@ export class HttpStream extends Stream {
-     /** @private */
-     _batch(batch) {
-         return this.#sendStreamRequest({
--            "type": "batch",
--            "batch": batch,
-+            type: "batch",
-+            batch: batch,
-         }).then((response) => {
-             return response["result"];
-         });
-@@ -76,9 +87,9 @@ export class HttpStream extends Stream {
-     /** @private */
-     _describe(protoSql) {
-         return this.#sendStreamRequest({
--            "type": "describe",
--            "sql": protoSql.sql,
--            "sql_id": protoSql.sqlId,
-+            type: "describe",
-+            sql: protoSql.sql,
-+            sql_id: protoSql.sqlId,
-         }).then((response) => {
-             return response["result"];
-         });
-@@ -86,9 +97,9 @@ export class HttpStream extends Stream {
-     /** @private */
-     _sequence(protoSql) {
-         return this.#sendStreamRequest({
--            "type": "sequence",
--            "sql": protoSql.sql,
--            "sql_id": protoSql.sqlId,
-+            type: "sequence",
-+            sql: protoSql.sql,
-+            sql_id: protoSql.sqlId,
-         }).then((_response) => {
-             return undefined;
-         });
 @@ -111,18 +122,24 @@ export class HttpStream extends Stream {
          }
          this.#closed = error;
@@ -350,10 +241,9 @@ index 186af16d9a6088b05f4bc2ac33ae9844e1a2ff69..38bab963f985b2b2d46de130bcc8023b
 +            this.#pipelineInProgress
 +        ) {
              this.#pipeline.push({
--                request: { "type": "close" },
+                 request: { "type": "close" },
 -                responseCallback() { },
 -                errorCallback() { },
-+                request: { type: "close" },
 +                responseCallback() {},
 +                errorCallback() {},
              });
@@ -369,7 +259,7 @@ index 186af16d9a6088b05f4bc2ac33ae9844e1a2ff69..38bab963f985b2b2d46de130bcc8023b
          }
          return new Promise((responseCallback, errorCallback) => {
              this.#pipeline.push({ request, responseCallback, errorCallback });
-@@ -138,33 +155,37 @@ export class HttpStream extends Stream {
+@@ -138,27 +155,31 @@ export class HttpStream extends Stream {
          const promise = fetch(request);
          this.#pipelineInProgress = true;
          this.#pipeline.length = 0;
@@ -422,19 +312,20 @@ index 186af16d9a6088b05f4bc2ac33ae9844e1a2ff69..38bab963f985b2b2d46de130bcc8023b
      }
      #createPipelineRequest(pipeline) {
          const url = new URL("v2/pipeline", this.#baseUrl);
-         const requestBody = {
--            "baton": this.#baton,
--            "requests": pipeline.map((entry) => entry.request),
-+            baton: this.#baton,
-+            requests: pipeline.map((entry) => entry.request),
-         };
-         const headers = new Headers();
+@@ -170,16 +191,25 @@ export class HttpStream extends Stream {
          if (this.#jwt !== null) {
-@@ -174,12 +195,16 @@ export class HttpStream extends Stream {
+             headers.set("authorization", `Bearer ${this.#jwt}`);
+         }
++
++        console.log("[PATCHED @libsql/client ESM] executing SQL statements", {
++            "requests": pipeline.map((entry) => entry.request),
++            "url": url.toString(),
++        });
+         return new Request(url, {
              method: "POST",
              headers,
              body: JSON.stringify(requestBody),
-+            // do not cache when using nextjs
++            // do not cache in next.js
 +            cache: "no-store",
          });
      }
@@ -448,7 +339,7 @@ index 186af16d9a6088b05f4bc2ac33ae9844e1a2ff69..38bab963f985b2b2d46de130bcc8023b
      }
      for (let i = 0; i < pipeline.length; ++i) {
          const result = respBody["results"][i];
-@@ -189,11 +214,9 @@ function handlePipelineResponse(pipeline, respBody) {
+@@ -189,11 +219,9 @@ function handlePipelineResponse(pipeline, respBody) {
                  throw new ProtoError("Received unexpected type of response");
              }
              entry.responseCallback(result["response"]);
@@ -462,7 +353,7 @@ index 186af16d9a6088b05f4bc2ac33ae9844e1a2ff69..38bab963f985b2b2d46de130bcc8023b
              throw new ProtoError("Received unexpected type of result");
          }
      }
-@@ -214,7 +237,8 @@ async function errorFromResponse(resp) {
+@@ -214,7 +242,8 @@ async function errorFromResponse(resp) {
          }
      }
      if (resp.status === 404) {
