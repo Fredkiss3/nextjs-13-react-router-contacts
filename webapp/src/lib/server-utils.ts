@@ -15,6 +15,9 @@ export function nextCache<T extends Callback>(
     tags: string[];
   }
 ) {
+  // FIXME: until we are sure this issue is fixed https://github.com/vercel/next.js/issues/52405,
+  // -> we are returning the callback directly to not have other stupid bugs
+  return cb;
   return unstable_cache(cb, options.tags, options);
 }
 

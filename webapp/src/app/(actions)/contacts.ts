@@ -54,11 +54,12 @@ export async function getAllContactIds() {
 export async function getContactDetail(id: number) {
   const fn = nextCache(
     async (id: number) => {
-      return (
-        (await db.query.contacts.findFirst({
-          where: (fields, { eq }) => eq(fields.id, id),
-        })) ?? null
-      );
+      const res = await db
+        .select()
+        .from(contacts)
+        .where(eq(contacts.id, Number(id)))
+        .all();
+      return res.length > 0 ? res[0] : null;
     },
     {
       tags: contactKeys.detail(id.toString()),
@@ -84,14 +85,14 @@ export async function deleteContact(fd: FormData) {
 }
 
 export async function createContact() {
-  const res = await db
+  const [res] = await db
     .insert(contacts)
     .values({
       favorite: false,
       createdAt: new Date(),
     })
     .returning({ insertedId: contacts.id })
-    .get();
+    .all();
 
   revalidateTag(contactKeys.allKey());
 
@@ -127,17 +128,26 @@ export async function updateContact(fd: FormData) {
 export async function favoriteContact(formData: FormData) {
   const id = formData.get("id")!.toString();
 
-  const contact = await getContactDetail(Number(id));
+  const oldContact = await getContactDetail(Number(id));
 
-  if (!contact) return;
+  if (!oldContact) return;
 
   await db
     .update(contacts)
-    .set({ favorite: !contact.favorite })
+    .set({ favorite: !oldContact.favorite })
     .where(eq(contacts.id, Number(id)))
     .run();
 
   revalidateTag(contactKeys.singleKey(id));
+
+  const newContact = await getContactDetail(Number(id));
+
+  console.log({
+    oldContact,
+    newContact,
+    oldValue: oldContact.favorite,
+    newValue: !oldContact.favorite,
+  });
 
   if (isSSR()) {
     redirect(`/contacts/${id}`);
