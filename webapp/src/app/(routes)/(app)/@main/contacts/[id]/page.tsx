@@ -9,7 +9,7 @@ import { FavoriteForm } from "~/app/(components)/favorite-form";
 // utils
 import { renderMarkdown } from "~/lib/server-utils";
 import { notFound } from "next/navigation";
-import { getContactDetail } from "~/app/(actions)/contacts";
+import { getContactDetail } from "~/app/(models)/contact";
 
 // types
 import type { Metadata } from "next";

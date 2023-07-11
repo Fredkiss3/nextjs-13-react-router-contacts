@@ -7,7 +7,6 @@ function linkWithSlash(href: string) {
   if (href.endsWith("/")) {
     return href;
   }
-
   return href + "/";
 }
 
@@ -20,17 +19,12 @@ export function useActiveLink(href: string) {
 export function NavLink({
   href,
   children,
-  className = "",
   ...props
-}: LinkProps & { children: React.ReactNode; className?: string }) {
+}: LinkProps & { children: React.ReactNode }) {
   const isActive = useActiveLink(href.toString());
 
   return (
-    <Link
-      {...props}
-      className={`${className} ${isActive && "active"}`}
-      href={href}
-    >
+    <Link {...props} className={`${isActive && "active"}`} href={href}>
       {children}
     </Link>
   );

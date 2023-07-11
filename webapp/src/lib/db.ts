@@ -1,4 +1,5 @@
-import { contacts } from "~/app/(models)/contact";
+import "server-only";
+import { contacts } from "~/lib/schema/contact";
 import { drizzle } from "drizzle-orm/libsql";
 import { createClient } from "@libsql/client/http";
 import { env } from "~/env.mjs";

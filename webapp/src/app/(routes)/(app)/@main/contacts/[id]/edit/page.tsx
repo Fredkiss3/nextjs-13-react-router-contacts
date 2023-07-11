@@ -1,5 +1,5 @@
 import { EditForm } from "~/app/(components)/edit-form";
-import { getContactDetail } from "~/app/(actions)/contacts";
+import { getContactDetail } from "~/app/(models)/contact";
 import { notFound } from "next/navigation";
 
 import type { Metadata } from "next";

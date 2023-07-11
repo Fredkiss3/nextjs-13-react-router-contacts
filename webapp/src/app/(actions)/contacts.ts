@@ -1,125 +1,54 @@
 "use server";
 
-import { revalidateTag } from "next/cache";
+import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import { isSSR, nextCache } from "~/lib/server-utils";
-import { contactKeys } from "~/lib/constants";
-import { db } from "~/lib/db";
-import { contacts } from "~/app/(models)/contact";
-import { asc, eq, sql } from "drizzle-orm";
-import { z } from "zod";
-import { wait } from "~/lib/functions";
+import { isSSR } from "~/lib/server-utils";
+import {
+  createContact,
+  deleteContact,
+  toggleFavoriteContact,
+  updateContact,
+  updateContactSchema,
+} from "~/app/(models)/contact";
 
-const contactSchema = z.object({
-  first: z.string().trim(),
-  last: z.string().trim(),
-  avatar: z.string().trim(),
-  twitter: z.string().trim(),
-  notes: z.string().trim(),
-});
-
-export async function searchContactByName(query: string) {
-  const searchStr = query.toLowerCase().trim() + "%";
-  return await db
-    .select({
-      id: contacts.id,
-    })
-    .from(contacts)
-    .where(
-      sql`lower(${contacts.first}) LIKE ${searchStr} or lower(${contacts.last}) LIKE ${searchStr}`
-    )
-    .orderBy(asc(contacts.createdAt))
-    .all();
-}
-
-export async function getAllContactIds() {
-  const fn = nextCache(
-    async () => {
-      return await db
-        .select({
-          id: contacts.id,
-        })
-        .from(contacts)
-        .orderBy(asc(contacts.createdAt))
-        .all();
-    },
-    {
-      tags: contactKeys.all(),
-    }
-  );
-
-  return await fn();
-}
-
-export async function getContactDetail(id: number) {
-  const fn = nextCache(
-    async (id: number) => {
-      const res = await db
-        .select()
-        .from(contacts)
-        .where(eq(contacts.id, Number(id)))
-        .all();
-      return res.length > 0 ? res[0] : null;
-    },
-    {
-      tags: contactKeys.detail(id.toString()),
-    }
-  );
-  return await fn(id);
-}
-
-export async function deleteContact(fd: FormData) {
+export async function removeContact(fd: FormData) {
   const id = fd.get("id")!.toString();
-  await db
-    .delete(contacts)
-    .where(eq(contacts.id, Number(id)))
-    .run();
-  revalidateTag(contactKeys.allKey());
-  // FIXME remove this code when this PR is merged : https://github.com/vercel/next.js/pull/51887
-  await wait(100);
-  revalidateTag(contactKeys.singleKey(id));
+  await deleteContact(Number(id));
 
+  revalidatePath("/");
+
+  // FIXME: until this issue is fixed : https://github.com/vercel/next.js/issues/52075
   if (isSSR()) {
     redirect("/");
   }
 }
 
-export async function createContact() {
-  const [res] = await db
-    .insert(contacts)
-    .values({
-      favorite: false,
-      createdAt: new Date(),
-    })
-    .returning({ insertedId: contacts.id })
-    .all();
+export async function newContact() {
+  const id = await createContact();
 
-  revalidateTag(contactKeys.allKey());
+  revalidatePath("/");
 
+  // FIXME: until this issue is fixed : https://github.com/vercel/next.js/issues/52075
   if (isSSR()) {
-    redirect(`/contacts/${res.insertedId}/edit`);
+    redirect(`/contacts/${id}/edit`);
   }
 
-  console.log({ res });
-  return res.insertedId;
+  return id;
 }
 
-export async function updateContact(fd: FormData) {
+export async function editContact(fd: FormData) {
   const id = fd.get("id")!.toString();
-  const result = contactSchema.safeParse(Object.fromEntries(fd));
+  const result = updateContactSchema.safeParse(Object.fromEntries(fd));
 
   if (!result.success) {
     redirect("/");
   }
 
-  await db
-    .update(contacts)
-    .set({ ...result.data })
-    .where(eq(contacts.id, Number(id)))
-    .run();
+  await updateContact(result.data, Number(id));
 
-  revalidateTag(contactKeys.singleKey(id));
+  revalidatePath("/");
 
+  // FIXME: until this issue is fixed : https://github.com/vercel/next.js/issues/52075
   if (isSSR()) {
     redirect(`/contacts/${id}`);
   }
@@ -128,27 +57,11 @@ export async function updateContact(fd: FormData) {
 export async function favoriteContact(formData: FormData) {
   const id = formData.get("id")!.toString();
 
-  const oldContact = await getContactDetail(Number(id));
+  await toggleFavoriteContact(Number(id));
 
-  if (!oldContact) return;
+  revalidatePath("/");
 
-  await db
-    .update(contacts)
-    .set({ favorite: !oldContact.favorite })
-    .where(eq(contacts.id, Number(id)))
-    .run();
-
-  revalidateTag(contactKeys.singleKey(id));
-
-  const newContact = await getContactDetail(Number(id));
-
-  console.log({
-    oldContact,
-    newContact,
-    oldValue: oldContact.favorite,
-    newValue: !oldContact.favorite,
-  });
-
+  // FIXME: until this issue is fixed : https://github.com/vercel/next.js/issues/52075
   if (isSSR()) {
     redirect(`/contacts/${id}`);
   }

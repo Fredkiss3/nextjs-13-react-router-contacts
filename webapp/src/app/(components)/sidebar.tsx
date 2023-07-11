@@ -6,10 +6,10 @@ import { SidebarForm } from "./sidebar-form";
 
 // utils
 import {
+  searchContactByName,
   getAllContactIds,
   getContactDetail,
-  searchContactByName,
-} from "~/app/(actions)/contacts";
+} from "~/app/(models)/contact";
 import { isSSR } from "~/lib/server-utils";
 
 // types
@@ -33,7 +33,10 @@ export async function Sidebar({ query = "" }: SidebarProps) {
             filteredContacts.map((contact) => (
               <li key={contact.id}>
                 {isSSR() ? (
-                  <React.Suspense fallback={<>loading contact...</>}>
+                  <React.Suspense
+                    fallback={<>loading contact...</>}
+                    key={contact.id}
+                  >
                     <SingleContact id={contact.id} />
                   </React.Suspense>
                 ) : (

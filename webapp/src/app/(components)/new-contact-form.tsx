@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import { useRouter } from "next/navigation";
-import { createContact } from "~/app/(actions)/contacts";
+import { newContact } from "~/app/(actions)/contacts";
 
 export function NewContactForm() {
   const router = useRouter();
@@ -10,17 +10,14 @@ export function NewContactForm() {
   return (
     <>
       <form
-        action={createContact}
+        action={newContact}
         onSubmit={(e) => {
           e.preventDefault();
+          // FIXME: until this issue is fixed : https://github.com/vercel/next.js/issues/52075
           React.startTransition(
             () =>
-              void createContact().then((newContactId) => {
+              void newContact().then((newContactId) => {
                 router.refresh();
-
-                console.log({
-                  newContactId,
-                });
                 router.push(`/contacts/${newContactId}/edit`);
               })
           );

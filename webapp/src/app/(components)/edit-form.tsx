@@ -6,10 +6,10 @@ import Link from "next/link";
 
 // utils
 import { useRouter } from "next/navigation";
-import { updateContact } from "~/app/(actions)/contacts";
+import { editContact } from "~/app/(actions)/contacts";
 
 // types
-import type { Contact } from "~/app/(models)/contact";
+import type { Contact } from "~/lib/schema/contact";
 
 export function EditForm({ contact }: { contact: Contact }) {
   const router = useRouter();
@@ -19,12 +19,13 @@ export function EditForm({ contact }: { contact: Contact }) {
     <>
       <form
         id="contact-form"
-        action={updateContact}
+        action={editContact}
         onSubmit={(e) => {
           e.preventDefault();
+          // FIXME: until this issue is fixed : https://github.com/vercel/next.js/issues/52075
           startTransition(
             () =>
-              void updateContact(new FormData(e.currentTarget)).then(() => {
+              void editContact(new FormData(e.currentTarget)).then(() => {
                 router.refresh();
                 router.push(`/contacts/${contact.id}`);
               })

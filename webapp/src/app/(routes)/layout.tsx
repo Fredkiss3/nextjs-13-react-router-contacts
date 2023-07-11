@@ -7,6 +7,7 @@ export const metadata = {
 };
 
 export const runtime = "edge";
+export const fetchCache = "force-no-store";
 
 export default async function RootLayout({
   children,
