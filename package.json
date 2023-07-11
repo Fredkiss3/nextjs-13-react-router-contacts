@@ -16,8 +16,6 @@
     "typescript": "5.1.6"
   },
   "pnpm": {
-    "patchedDependencies": {
-      "@libsql/hrana-client@0.4.2": "patches/@libsql__hrana-client@0.4.2.patch"
-    }
+    "patchedDependencies": {}
   }
 }
