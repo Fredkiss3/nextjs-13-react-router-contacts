@@ -6,6 +6,7 @@ import { newContact } from "~/app/(actions)/contacts";
 
 export function NewContactForm() {
   const router = useRouter();
+  const [_, startTransition] = React.useTransition();
 
   return (
     <>
@@ -14,12 +15,11 @@ export function NewContactForm() {
         onSubmit={(e) => {
           e.preventDefault();
           // FIXME: until this issue is fixed : https://github.com/vercel/next.js/issues/52075
-          React.startTransition(
-            () =>
-              void newContact().then((newContactId) => {
-                router.refresh();
-                router.push(`/contacts/${newContactId}/edit`);
-              })
+          startTransition(() =>
+            newContact().then((newContactId) => {
+              router.refresh();
+              router.push(`/contacts/${newContactId}/edit`);
+            })
           );
         }}
       >

@@ -23,12 +23,11 @@ export function EditForm({ contact }: { contact: Contact }) {
         onSubmit={(e) => {
           e.preventDefault();
           // FIXME: until this issue is fixed : https://github.com/vercel/next.js/issues/52075
-          startTransition(
-            () =>
-              void editContact(new FormData(e.currentTarget)).then(() => {
-                router.refresh();
-                router.push(`/contacts/${contact.id}`);
-              })
+          startTransition(() =>
+            editContact(new FormData(e.currentTarget)).then(() => {
+              router.refresh();
+              router.push(`/contacts/${contact.id}`);
+            })
           );
         }}
       >

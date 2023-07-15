@@ -17,13 +17,12 @@ export function DeleteForm({ contactId }: { contactId: number }) {
           return;
         }
 
-        startTransition(
-          () =>
-            void removeContact(new FormData(e.currentTarget)).then(() => {
-              // FIXME: until this issue is fixed : https://github.com/vercel/next.js/issues/52075
-              router.replace("/");
-              router.refresh();
-            })
+        startTransition(() =>
+          removeContact(new FormData(e.currentTarget)).then(() => {
+            // FIXME: until this issue is fixed : https://github.com/vercel/next.js/issues/52075
+            router.replace("/");
+            router.refresh();
+          })
         );
       }}
     >
