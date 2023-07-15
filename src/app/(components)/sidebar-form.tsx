@@ -13,6 +13,7 @@ export function SidebarForm({ searchQuery }: SidebarFormProps) {
   const router = useRouter();
   const path = usePathname();
   const formRef = React.useRef<HTMLFormElement>(null);
+  const [isPending, startTransition] = React.useTransition();
 
   const submitForm = React.useCallback(
     debounce(() => {
@@ -31,13 +32,11 @@ export function SidebarForm({ searchQuery }: SidebarFormProps) {
           method="get"
           onSubmit={(e) => {
             e.preventDefault();
-            const fd = new FormData(e.currentTarget);
+            const formData = new FormData(e.currentTarget);
 
-            // @ts-expect-error
-            const sp = new URLSearchParams(fd);
-            React.startTransition(() =>
-              router.push(path + "?" + sp.toString())
-            );
+            // @ts-expect-error the URLSearchParams constructor works with form data
+            const params = new URLSearchParams(formData);
+            startTransition(() => router.push(path + "?" + params.toString()));
           }}
         >
           <input
@@ -48,12 +47,14 @@ export function SidebarForm({ searchQuery }: SidebarFormProps) {
             type="search"
             name="q"
             defaultValue={searchQuery}
-            onChange={(e) => {
+            onChange={() => {
               submitForm();
             }}
           />
-          <div id="search-spinner" aria-hidden hidden={true} />
-          <div className="sr-only" aria-live="polite"></div>
+          <div id="search-spinner" aria-hidden hidden={!isPending} />
+          <div className="sr-only" aria-live="polite">
+            {isPending && "Loading"}
+          </div>
         </form>
 
         <NewContactForm />

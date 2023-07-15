@@ -10,7 +10,7 @@ function linkWithSlash(href: string) {
   return href + "/";
 }
 
-export function useActiveLink(href: string) {
+function useActiveLink(href: string) {
   const path = usePathname();
 
   return linkWithSlash(path).includes(linkWithSlash(href));
