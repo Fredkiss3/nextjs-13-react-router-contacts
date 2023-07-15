@@ -3,11 +3,9 @@ import { Logo } from "~/app/(components)/logo";
 export default async function MainLayout({
   children,
   sidebar,
-  main,
 }: {
   children: React.ReactNode;
   sidebar: React.ReactNode;
-  main: React.ReactNode;
 }) {
   return (
     <main
@@ -24,7 +22,7 @@ export default async function MainLayout({
 
         {sidebar}
       </aside>
-      <div id="detail">{main}</div>
+      <div id="detail">{children}</div>
     </main>
   );
 }

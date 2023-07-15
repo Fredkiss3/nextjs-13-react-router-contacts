@@ -18,7 +18,7 @@ export async function generateMetadata({
   }
 
   return {
-    title: `Edit contact : ${contact.twitter}`,
+    title: `Edit contact : ${contact.twitter ?? "empty"}`,
   };
 }
 

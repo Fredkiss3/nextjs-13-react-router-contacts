@@ -1,7 +1,7 @@
 export const contactKeys = {
   all: () => [contactKeys.allKey()],
-  detail: (id: string) => [contactKeys.singleKey(id)],
+  detail: (id: number) => [contactKeys.singleKey(id)],
   // keys
-  singleKey: (id: string) => `contact-${id}` as const,
+  singleKey: (id: number) => `contact-${id}` as const,
   allKey: () => "contacts" as const,
 } as const;

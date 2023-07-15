@@ -2,7 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import { isSSR } from "~/lib/server-utils";
+import { ssrRedirect } from "~/lib/server-utils";
 import {
   createContact,
   deleteContact,
@@ -16,22 +16,14 @@ export async function removeContact(fd: FormData) {
   await deleteContact(Number(id));
 
   revalidatePath("/");
-
-  // FIXME: until this issue is fixed : https://github.com/vercel/next.js/issues/52075
-  if (isSSR()) {
-    redirect("/");
-  }
+  ssrRedirect("/");
 }
 
 export async function newContact() {
   const id = await createContact();
 
   revalidatePath("/");
-
-  // FIXME: until this issue is fixed : https://github.com/vercel/next.js/issues/52075
-  if (isSSR()) {
-    redirect(`/contacts/${id}/edit`);
-  }
+  ssrRedirect(`/contacts/${id}/edit`);
 
   return id;
 }
@@ -48,10 +40,7 @@ export async function editContact(fd: FormData) {
 
   revalidatePath("/");
 
-  // FIXME: until this issue is fixed : https://github.com/vercel/next.js/issues/52075
-  if (isSSR()) {
-    redirect(`/contacts/${id}`);
-  }
+  ssrRedirect(`/contacts/${id}`);
 }
 
 export async function favoriteContact(formData: FormData) {
@@ -61,8 +50,5 @@ export async function favoriteContact(formData: FormData) {
 
   revalidatePath("/");
 
-  // FIXME: until this issue is fixed : https://github.com/vercel/next.js/issues/52075
-  if (isSSR()) {
-    redirect(`/contacts/${id}`);
-  }
+  ssrRedirect(`/contacts/${id}`);
 }

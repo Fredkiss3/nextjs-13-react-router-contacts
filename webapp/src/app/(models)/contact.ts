@@ -4,41 +4,52 @@ import { cache } from "react";
 import { z } from "zod";
 import { db } from "~/lib/db";
 import { contacts } from "~/lib/schema/contact";
-import { cookies } from "next/headers";
+import { nextCache } from "~/lib/server-utils";
+import { contactKeys } from "~/lib/constants";
+import { revalidateTag } from "next/cache";
+import { wait } from "~/lib/functions";
 
 export const getContactDetail = cache(async function getContactDetail(
   id: number
 ) {
-  // FIXME : until this issue is fixed : https://github.com/vercel/next.js/issues/52405
-  // Dummy call to `cookies` as it is the only workaround for now
-  cookies();
-
-  return (
-    (await db.query.contacts.findFirst({
-      where: (fields, { eq }) => eq(fields.id, id),
-    })) ?? null
+  const fn = nextCache(
+    async (id: number) => {
+      return (
+        (await db.query.contacts.findFirst({
+          where: (fields, { eq }) => eq(fields.id, id),
+        })) ?? null
+      );
+    },
+    {
+      tags: contactKeys.detail(id),
+    }
   );
+
+  return fn(id);
 });
 
 export const getAllContactIds = cache(async function getAllContactIds() {
-  // FIXME : until this issue is fixed : https://github.com/vercel/next.js/issues/52405
-  // Dummy call to `cookies` as it is the only workaround for now
-  cookies();
-  return await db
-    .select({
-      id: contacts.id,
-    })
-    .from(contacts)
-    .orderBy(asc(contacts.createdAt))
-    .all();
+  const fn = nextCache(
+    async () => {
+      return await db
+        .select({
+          id: contacts.id,
+        })
+        .from(contacts)
+        .orderBy(asc(contacts.createdAt))
+        .all();
+    },
+    {
+      tags: contactKeys.all(),
+    }
+  );
+
+  return fn();
 });
 
 export const searchContactByName = cache(async function searchContactByName(
   query: string
 ) {
-  // FIXME : until this issue is fixed : https://github.com/vercel/next.js/issues/52405
-  // Dummy call to `cookies` as it is the only workaround for now
-  cookies();
   const searchStr = query.toLowerCase().trim() + "%";
   return await db
     .select({
@@ -53,26 +64,26 @@ export const searchContactByName = cache(async function searchContactByName(
 });
 
 export async function createContact() {
-  // FIXME : until this issue is fixed : https://github.com/vercel/next.js/issues/52405
-  // Dummy call to `cookies` as it is the only workaround for now
-  cookies();
   const res = await db
     .insert(contacts)
     .values({
       favorite: false,
-      createdAt: new Date(),
     })
     .returning({ insertedId: contacts.id })
     .get();
+
+  revalidateTag(contactKeys.allKey());
 
   return res.insertedId;
 }
 
 export async function deleteContact(id: number) {
-  // FIXME : until this issue is fixed : https://github.com/vercel/next.js/issues/52405
-  // Dummy call to `cookies` as it is the only workaround for now
-  cookies();
-  return db.delete(contacts).where(eq(contacts.id, id)).run();
+  db.delete(contacts).where(eq(contacts.id, id)).run();
+  revalidateTag(contactKeys.allKey());
+  // FIXME remove this code when this PR is merged : https://github.com/vercel/next.js/pull/51887
+  // wait for ms
+  await wait(50);
+  revalidateTag(contactKeys.singleKey(id));
 }
 
 export const updateContactSchema = z.object({
@@ -86,39 +97,27 @@ export const updateContactSchema = z.object({
 export type UpdateContactPayload = z.TypeOf<typeof updateContactSchema>;
 
 export async function updateContact(payload: UpdateContactPayload, id: number) {
-  // FIXME : until this issue is fixed : https://github.com/vercel/next.js/issues/52405
-  // Dummy call to `cookies` as it is the only workaround for now
-  cookies();
   await db
     .update(contacts)
     .set({ ...payload, updadedAt: new Date() })
     .where(eq(contacts.id, id))
     .run();
+  revalidateTag(contactKeys.singleKey(id));
 }
 
 export async function toggleFavoriteContact(id: number) {
-  // FIXME : until this issue is fixed : https://github.com/vercel/next.js/issues/52405
-  // Dummy call to `cookies` as it is the only workaround for now
-  cookies();
   const oldContact = await getContactDetail(id);
 
   if (!oldContact) return;
 
-  const newValue = await db
+  await db
     .update(contacts)
-    .set({ favorite: !oldContact.favorite, updadedAt: new Date() })
+    .set({ favorite: !oldContact.favorite })
     .where(eq(contacts.id, Number(id)))
     .returning({
       favorite: contacts.favorite,
     })
     .run();
 
-  const newContact = await getContactDetail(Number(id));
-
-  console.log({
-    oldContact,
-    newContact,
-    oldValue: oldContact.favorite,
-    newValue: newValue.rows,
-  });
+  revalidateTag(contactKeys.singleKey(id));
 }

@@ -3,10 +3,17 @@ import { Remarkable } from "remarkable";
 import { linkify } from "remarkable/linkify";
 import { headers } from "next/headers";
 import { unstable_cache } from "next/cache";
-import { cache } from "react";
+import { redirect } from "next/navigation";
 
 export function isSSR() {
   return headers().get("accept")?.includes("text/html");
+}
+
+export function ssrRedirect(path: string) {
+  // FIXME: until this issue is fixed : https://github.com/vercel/next.js/issues/52075
+  if (isSSR()) {
+    redirect(path);
+  }
 }
 
 type Callback = (...args: any[]) => Promise<any>;
@@ -16,10 +23,6 @@ export function nextCache<T extends Callback>(
     tags: string[];
   }
 ) {
-  // FIXME: until we are sure this issue is fixed https://github.com/vercel/next.js/issues/52405,
-  // -> we are returning the callback directly because i patched `@libsql` to use `cache: "no-store"`
-  // but it seems like it can't be used within `unstable_cache`
-  return cache(cb);
   return unstable_cache(cb, options.tags, options);
 }
 
