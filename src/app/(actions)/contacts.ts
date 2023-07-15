@@ -8,11 +8,11 @@ import {
   deleteContact,
   toggleFavoriteContact,
   updateContact,
-  updateContactSchema,
 } from "~/app/(models)/contact";
+import { updateContactSchema } from "~/lib/shared-utils";
 
-export async function removeContact(fd: FormData) {
-  const id = fd.get("id")!.toString();
+export async function removeContact(formData: FormData) {
+  const id = formData.get("id")!.toString();
   await deleteContact(Number(id));
 
   revalidatePath("/");
@@ -28,9 +28,9 @@ export async function newContact() {
   return id;
 }
 
-export async function editContact(fd: FormData) {
-  const id = fd.get("id")!.toString();
-  const result = updateContactSchema.safeParse(Object.fromEntries(fd));
+export async function editContact(formData: FormData) {
+  const id = formData.get("id")!.toString();
+  const result = updateContactSchema.safeParse(Object.fromEntries(formData));
 
   if (!result.success) {
     redirect("/");

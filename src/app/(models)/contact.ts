@@ -1,13 +1,13 @@
 import "server-only";
 import { sql, eq, asc } from "drizzle-orm";
 import { cache } from "react";
-import { z } from "zod";
 import { db } from "~/lib/db";
 import { contacts } from "~/lib/schema/contact";
 import { nextCache } from "~/lib/server-utils";
 import { contactKeys } from "~/lib/constants";
 import { revalidateTag } from "next/cache";
 import { wait } from "~/lib/functions";
+import type { UpdateContactPayload } from "~/lib/shared-utils";
 
 export const getContactDetail = cache(async function getContactDetail(
   id: number
@@ -85,16 +85,6 @@ export async function deleteContact(id: number) {
   await wait(50);
   revalidateTag(contactKeys.singleKey(id));
 }
-
-export const updateContactSchema = z.object({
-  first: z.string().trim(),
-  last: z.string().trim(),
-  avatar: z.string().trim(),
-  twitter: z.string().trim(),
-  notes: z.string().trim(),
-});
-
-export type UpdateContactPayload = z.TypeOf<typeof updateContactSchema>;
 
 export async function updateContact(payload: UpdateContactPayload, id: number) {
   await db

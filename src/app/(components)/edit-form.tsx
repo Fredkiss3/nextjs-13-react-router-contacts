@@ -10,6 +10,7 @@ import { editContact } from "~/app/(actions)/contacts";
 
 // types
 import type { Contact } from "~/lib/schema/contact";
+import { updateContactSchema } from "~/lib/shared-utils";
 
 export function EditForm({ contact }: { contact: Contact }) {
   const router = useRouter();
@@ -22,13 +23,23 @@ export function EditForm({ contact }: { contact: Contact }) {
         action={editContact}
         onSubmit={(e) => {
           e.preventDefault();
-          // FIXME: until this issue is fixed : https://github.com/vercel/next.js/issues/52075
-          startTransition(() =>
-            editContact(new FormData(e.currentTarget)).then(() => {
-              router.refresh();
-              router.push(`/contacts/${contact.id}`);
-            })
+          // validate data client-side
+          const formData = new FormData(e.currentTarget);
+          const result = updateContactSchema.safeParse(
+            Object.fromEntries(formData)
           );
+
+          if (result.success) {
+            // FIXME: until this issue is fixed : https://github.com/vercel/next.js/issues/52075
+            startTransition(() =>
+              editContact(new FormData(e.currentTarget)).then(() => {
+                router.refresh();
+                router.push(`/contacts/${contact.id}`);
+              })
+            );
+          } else {
+            alert("Invalid input, please retry or reload the page !");
+          }
         }}
       >
         <input type="hidden" name="id" value={contact.id} />
