@@ -4,6 +4,7 @@ import { linkify } from "remarkable/linkify";
 import { headers } from "next/headers";
 import { unstable_cache } from "next/cache";
 import { redirect } from "next/navigation";
+import { cache } from "react";
 
 export function isSSR() {
   return headers().get("accept")?.includes("text/html");
@@ -23,7 +24,7 @@ export function nextCache<T extends Callback>(
     tags: string[];
   }
 ) {
-  return unstable_cache(cb, options.tags, options);
+  return cache(unstable_cache(cb, options.tags, options));
 }
 
 export function renderMarkdown(markdown: string): string {
