@@ -100,7 +100,7 @@ export async function toggleFavoriteContact(id: number) {
 
   await db
     .update(contacts)
-    .set({ favorite: !oldContact.favorite })
+    .set({ favorite: !oldContact.favorite, updadedAt: new Date() })
     .where(eq(contacts.id, Number(id)))
     .returning({
       favorite: contacts.favorite,
