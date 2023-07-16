@@ -9,7 +9,7 @@ import { revalidateTag } from "next/cache";
 import { wait } from "~/lib/functions";
 import type { UpdateContactPayload } from "~/lib/shared-utils";
 
-export async function getContactDetail(id: number) {
+export const getContactDetail = async function getContactDetail(id: number) {
   const fn = nextCache(
     async (id: number) => {
       return (
@@ -24,22 +24,26 @@ export async function getContactDetail(id: number) {
   );
 
   return fn(id);
-}
+};
 
-export const getAllContactIds = nextCache(
-  async function () {
-    return await db
-      .select({
-        id: contacts.id,
-      })
-      .from(contacts)
-      .orderBy(asc(contacts.createdAt))
-      .all();
-  },
-  {
-    tags: contactKeys.all(),
-  }
-);
+export const getAllContactIds = async function getAllContactIds() {
+  const fn = nextCache(
+    async () => {
+      return await db
+        .select({
+          id: contacts.id,
+        })
+        .from(contacts)
+        .orderBy(asc(contacts.createdAt))
+        .all();
+    },
+    {
+      tags: contactKeys.all(),
+    }
+  );
+
+  return fn();
+};
 
 export const searchContactByName = cache(async function searchContactByName(
   query: string
@@ -75,6 +79,7 @@ export async function deleteContact(id: number) {
   db.delete(contacts).where(eq(contacts.id, id)).run();
   revalidateTag(contactKeys.allKey());
   // FIXME remove this code when this PR is merged : https://github.com/vercel/next.js/pull/51887
+  // wait for ms
   await wait(50);
   revalidateTag(contactKeys.singleKey(id));
 }
