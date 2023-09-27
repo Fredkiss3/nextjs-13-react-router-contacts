@@ -1,35 +1,30 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Next 13 contacts
 
-[![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/Fredkiss3/nextjs-13-react-router-contacts)
+This is a [Next.js](https://nextjs.org/) project bootstrapped with `create-next-app`.
 
+## Pre-requisities
+
+- A [turso](https://turso.tech/) database
+- [Bun](https://bun.sh/) installed on your project
+- Node &gt;= v18
 
 ## Getting Started
 
 1. Install the packages :
-```bash
-pnpm install
-```
-
-2. Run the Fake API server:
-
 
 ```bash
-pnpm api
+bun install
 ```
 
-3. Run the nextjs development server:
+1. Run the nextjs development server:
 
 ```bash
-pnpm dev:webapp
+bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open <http://localhost:3000> with your browser to see the result.
 
 You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
-
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
 
 ## Learn More
 

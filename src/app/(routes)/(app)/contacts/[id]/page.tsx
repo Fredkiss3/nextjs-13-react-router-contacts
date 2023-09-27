@@ -15,92 +15,97 @@ import { getContactDetail } from "~/app/(models)/contact";
 import type { Metadata } from "next";
 
 export async function generateMetadata({
-  params,
+    params,
 }: {
-  params: {
-    id: string;
-  };
+    params: {
+        id: string;
+    };
 }): Promise<Metadata> {
-  const contact = await getContactDetail(Number(params.id));
+    const contact = await getContactDetail(Number(params.id));
 
-  if (!contact) {
-    notFound();
-  }
+    if (!contact) {
+        notFound();
+    }
 
-  return {
-    title: `Contact : ${contact.twitter ?? "<no name>"}`,
-  };
+    return {
+        title: `Contact : ${contact.github_handle ?? "<no name>"}`,
+    };
 }
 
 export default async function ContactPage({
-  params,
+    params,
 }: {
-  params: {
-    id: string;
-  };
+    params: {
+        id: string;
+    };
 }) {
-  const contact = await getContactDetail(Number(params.id));
+    const contact = await getContactDetail(Number(params.id));
 
-  if (!contact) {
-    notFound();
-  }
+    if (!contact) {
+        notFound();
+    }
 
-  return (
-    <section id="contact">
-      <div>
-        {contact.avatar ? (
-          <Image
-            key={contact.avatar}
-            src={contact.avatar}
-            alt={`Contact`}
-            width={200}
-            height={200}
-          />
-        ) : (
-          <div className="contact-img"></div>
-        )}
-      </div>
+    return (
+        <section id="contact">
+            <div>
+                {contact.avatar_url ? (
+                    <Image
+                        src={contact.avatar_url}
+                        alt={`Contact`}
+                        width={200}
+                        height={200}
+                    />
+                ) : (
+                    <div className="contact-img"></div>
+                )}
+            </div>
 
-      <div>
-        <h1>
-          {contact.first || contact.last ? (
-            <>
-              {contact.first} {contact.last}
-            </>
-          ) : (
-            <i>No Name</i>
-          )}
-          <FavoriteForm isFavorite={contact.favorite} contactId={contact.id} />
-        </h1>
+            <div>
+                <h1>
+                    {contact.first || contact.last ? (
+                        <>
+                            {contact.first} {contact.last}
+                        </>
+                    ) : (
+                        <i>No Name</i>
+                    )}
+                    <FavoriteForm
+                        isFavorite={contact.favorite}
+                        contactId={contact.id}
+                    />
+                </h1>
 
-        {contact.twitter && (
-          <p>
-            <a
-              target="_blank"
-              rel="noreferrer"
-              className="github_handle"
-              href={`https://github.com/${contact.twitter}`}
-            >
-              {contact.twitter}
-            </a>
-          </p>
-        )}
+                {contact.github_handle && (
+                    <p>
+                        <a
+                            target="_blank"
+                            rel="noreferrer"
+                            className="github_handle"
+                            href={`https://github.com/${contact.github_handle}`}
+                        >
+                            {contact.github_handle}
+                        </a>
+                    </p>
+                )}
 
-        {contact.notes && (
-          <article
-            dangerouslySetInnerHTML={{
-              __html: renderMarkdown(contact.notes),
-            }}
-          />
-        )}
+                {contact.notes && (
+                    <article
+                        dangerouslySetInnerHTML={{
+                            __html: renderMarkdown(contact.notes),
+                        }}
+                    />
+                )}
 
-        <div>
-          <Link href={`/contacts/${params.id}/edit`} className={`edit-button`}>
-            Edit
-          </Link>
-          <DeleteForm contactId={contact.id} />
-        </div>
-      </div>
-    </section>
-  );
+                <div>
+                    <Link
+                        href={`/contacts/${params.id}/edit`}
+                        className={`edit-button`}
+                    >
+                        Edit
+                    </Link>
+                    <DeleteForm contactId={contact.id} />
+                </div>
+            </div>
+        </section>
+    );
 }

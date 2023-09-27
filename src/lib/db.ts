@@ -1,18 +1,18 @@
 import "server-only";
-import { contacts } from "~/lib/schema/contact";
+import { contacts } from "~/lib/schema/contact.sql";
 import { drizzle } from "drizzle-orm/libsql";
 import { createClient } from "@libsql/client/http";
 import { env } from "~/env.mjs";
 
 export const db = drizzle(
-  createClient({
-    url: env.TURSO_DB_URL,
-    authToken: env.TURSO_DB_TOKEN,
-  }),
-  {
-    logger: true,
-    schema: {
-      contacts,
-    },
-  }
+    createClient({
+        url: env.TURSO_DB_URL,
+        authToken: env.TURSO_DB_TOKEN,
+    }),
+    {
+        logger: true,
+        schema: {
+            contacts,
+        },
+    }
 );
